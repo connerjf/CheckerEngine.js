@@ -39,9 +39,9 @@ let loops = 0;
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (checkerBoard[i][j] == 1) {
-          gameState.blackCheckers[] = this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
+          gameState.blackCheckers = this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
         } else if (checkerBoard[i][j] == 2) {
-          gameState.redCheckers[] = this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
+          gameState.redCheckers = this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
         }
       }
     }
@@ -201,7 +201,7 @@ let loops = 0;
             console.log(checkerBoard);
             whoseMove = 1;
             console.log(whoseMove);
-            console.log(config.scene.create());
+            gameState.scene.restart();
 
           } else if (legalPlayerMoves[i].length == 6) {
             checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
@@ -210,6 +210,7 @@ let loops = 0;
             redCaptures += 1;
             console.log("helloo");
             whoseMove = 1;
+            gameState.scene.restart();
 
           } else if (legalPlayerMoves[i].length == 8) {
             checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
@@ -219,7 +220,7 @@ let loops = 0;
             redCaptures += 2;
             console.log("hellooo");
             whoseMove = 1;
-
+            gameState.scene.restart();
           }
         }
       }
