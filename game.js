@@ -1,4 +1,4 @@
-// let gameOn = confirm("Ready to play?");
+let gameOn = confirm("Ready to play?");
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -61,7 +61,8 @@ function create() {
   console.log("load success!")
 }
 
-
+//Finds every possible computer move and assigns them to 1 of 3 arrays
+//depending on how beneficial they are
 function blackMoves() {
   //Check every piece on the board
   for (let i = 0; i < 8; i++) {
@@ -93,6 +94,8 @@ function blackMoves() {
   }
 }
 
+//Checks if any of the possibleMoves moves a piece to the center pieces,
+//if so it adds that piece to the favourableMoves array
 function moreFavourableMoves(possibleMoves) {
   for (let i = 0; i < possibleMoves.length; i++) {
     if (possibleMoves[i].charAt(2) == 3 || possibleMoves[i].charAt(2) == 4) {
@@ -103,6 +106,7 @@ function moreFavourableMoves(possibleMoves) {
   }
 }
 
+//Computer determines which move to make
 function chooseBlackMove(possibleMoves, favourableMoves, bestMoves) {
   if (bestMoves.length > 0) {
     blackMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
@@ -115,6 +119,7 @@ function chooseBlackMove(possibleMoves, favourableMoves, bestMoves) {
   }
 }
 
+//Turns the string for moves into actual moves on the computer by changing the main checkerBoard array
 function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
@@ -137,6 +142,7 @@ function moveBlackPiece(blackMove) {
 
 }
 
+//Finds the legal moves for the player
 function playerMoves() {
   //Check every piece on the board
   for (let i = 0; i < 8; i++) {
@@ -168,6 +174,7 @@ function playerMoves() {
   }
 }
 
+//Gets the position of a mouse click from the player and then calls the selectRedPiece function
 function mousePosition(event) {
   mouseX = event.pageX;
   mouseY = event.pageY;
@@ -175,7 +182,8 @@ function mousePosition(event) {
   selectRedPiece(legalPlayerMoves);
 }
 
-
+//Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
+//Once you click twice, the moveRedPiece function is called
 function selectRedPiece(legalPlayerMoves) {
   if (mouseX > 107 && mouseX < 662 && mouseY < 712 && mouseY > 155 && whoseMove == 2 && clicks < 2) {
     mouseX = mouseX - 108;
@@ -193,6 +201,7 @@ function selectRedPiece(legalPlayerMoves) {
   }
 }
 
+//Changes the move string of the players move to an actual change in the main checkerBoard array
 function moveRedPiece() {
   for (let i = 0; i < legalPlayerMoves.length; i++) {
     if (legalPlayerMoves[i].slice(0, 4) == redMove) {
