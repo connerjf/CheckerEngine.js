@@ -6,7 +6,8 @@ const config = {
   backgroundColor: "#6d0000",
   scene: {
     preload,
-    create
+    create,
+    moveRedPiece
   }
 };
 
@@ -27,7 +28,7 @@ let possibleMoves = [];
 let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
-let whoseMove = 2;
+let whoseMove = 1;
 let stalemate = false;
 let winner = 0;
 let blackCaptures = 0;
@@ -52,9 +53,9 @@ function create() {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (checkerBoard[i][j] == 1) {
-        this.blackCheckers = this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
+        this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
       } else if (checkerBoard[i][j] == 2) {
-        this.redCheckers = this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
+        this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
       }
     }
   }
@@ -197,6 +198,7 @@ function selectRedPiece(legalPlayerMoves) {
     clicks++;
   }
   if (clicks == 2) {
+    console.log("clicks");
     moveRedPiece();
   }
 }
@@ -205,14 +207,15 @@ function selectRedPiece(legalPlayerMoves) {
 function moveRedPiece() {
   for (let i = 0; i < legalPlayerMoves.length; i++) {
     if (legalPlayerMoves[i].slice(0, 4) == redMove) {
+      console.log("slice");
       if (legalPlayerMoves[i].length == 4) {
+        this.remove.circle((legalPlayerMoves[i].charAt(0)) * 69 + 144, (legalPlayerMoves[i].charAt(1)) * 69 + 194, 32, 0xFF0000);
         checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
         console.log("hello");
         console.log(checkerBoard);
         whoseMove = 1;
         console.log(whoseMove);
-        console.log(config.scene.create());
 
       } else if (legalPlayerMoves[i].length == 6) {
         checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
@@ -238,3 +241,12 @@ function moveRedPiece() {
     }
   }
 }
+
+if (whoseMove == 1) {
+  blackMoves();
+  moreFavourableMoves(possibleMoves);
+  chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
+  moveBlackPiece();
+}
+
+playerMoves();
