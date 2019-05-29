@@ -28,7 +28,7 @@ let possibleMoves = [];
 let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
-let whoseMove = 1;
+let whoseMove = 2;
 let stalemate = false;
 let winner = 0;
 let blackCaptures = 0;
@@ -38,6 +38,7 @@ let mouseY;
 let selectedX;
 let selectedY;
 let redMove = '';
+let blackMove = '';
 let clicks = 0;
 let loops = 0;
 
@@ -168,7 +169,7 @@ function playerMoves() {
                 }
               }
             }
-          } catch (err) { }
+          } catch (err) {}
         }
       }
     }
@@ -196,27 +197,26 @@ function selectRedPiece(legalPlayerMoves) {
     redMove = redMove + selectedY.toString() + selectedX.toString();
     console.log(redMove);
     clicks++;
-  }
-  if (clicks == 2) {
-    console.log("clicks");
-    moveRedPiece();
+    if (clicks == 2) {
+      console.log("clicks");
+      console.log(legalPlayerMoves);
+      moveRedPiece();
+    }
   }
 }
 
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function moveRedPiece() {
   for (let i = 0; i < legalPlayerMoves.length; i++) {
-    if (legalPlayerMoves[i].slice(0, 4) == redMove) {
+    if (legalPlayerMoves[i].slice(0, 4) === redMove) {
       console.log("slice");
       if (legalPlayerMoves[i].length == 4) {
-        this.remove.circle((legalPlayerMoves[i].charAt(0)) * 69 + 144, (legalPlayerMoves[i].charAt(1)) * 69 + 194, 32, 0xFF0000);
         checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
         console.log("hello");
         console.log(checkerBoard);
         whoseMove = 1;
         console.log(whoseMove);
-
       } else if (legalPlayerMoves[i].length == 6) {
         checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
@@ -224,7 +224,6 @@ function moveRedPiece() {
         redCaptures += 1;
         console.log("helloo");
         whoseMove = 1;
-
       } else if (legalPlayerMoves[i].length == 8) {
         checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
@@ -233,8 +232,6 @@ function moveRedPiece() {
         redCaptures += 2;
         console.log("hellooo");
         whoseMove = 1;
-
-
       }
       redMove = '';
       clicks = 0;
@@ -246,7 +243,7 @@ if (whoseMove == 1) {
   blackMoves();
   moreFavourableMoves(possibleMoves);
   chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
-  moveBlackPiece();
+  moveBlackPiece(blackMove);
+} else if (whoseMove == 2) {
+  playerMoves();
 }
-
-playerMoves();
