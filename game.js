@@ -128,9 +128,8 @@ function chooseBlackMove(possibleMoves, favourableMoves, bestMoves) {
 function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
-
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    document.getElementById("table").getElementsByClassName()
+    document.getElementById("table").getElementsByClassName("")
     whoseMove = 2;
   } else if (blackMove.length == 6) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
