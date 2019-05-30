@@ -3,97 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <title> Customized Checkers Game!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="src/style.css">
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 </head>
 
-<body onmousedown="mousePosition(event)">
-  <div id="main">
+<body onmousedown="">
+  <div id="navbar">
+    <h1>CheckerEngine.js</h1>
   </div>
-  <table id="table">
-    <tr class="row0">
-      <td class="col0">Hello</td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row1">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row2">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6">Goodbye</td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row3">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row4">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row5">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row6">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <tr class="row7">
-      <td class="col0"></td>
-      <td class="col1"></td>
-      <td class="col2"></td>
-      <td class="col3"></td>
-      <td class="col4"></td>
-      <td class="col5"></td>
-      <td class="col6"></td>
-      <td class="col7"></td>
-    </tr>
-    <script src="game.js"></script>
-  </table>
+  <main>
+    <table>
+      <tr class="row0">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row1">
+        <td class="col0"></td>
+        <td class="col1 checkerPiece red"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row2">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4 checkerPiece black"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row3">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row4">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row5">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row6">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <tr class="row7">
+        <td class="col0"></td>
+        <td class="col1"></td>
+        <td class="col2"></td>
+        <td class="col3"></td>
+        <td class="col4"></td>
+        <td class="col5"></td>
+        <td class="col6"></td>
+        <td class="col7"></td>
+      </tr>
+      <!-- <script src="game.js"></script> -->
 
+    </table>
+    <div class="sidestat">
+      <span>RED MOVE</span>
+    </div>
+  </main>
 </body>
 
 </html>

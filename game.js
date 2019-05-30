@@ -173,7 +173,7 @@ function playerMoves() {
                 }
               }
             }
-          } catch (err) {}
+          } catch (err) { }
         }
       }
     }
