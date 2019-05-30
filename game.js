@@ -41,6 +41,9 @@ let redMove = '';
 let blackMove = '';
 let clicks = 0;
 let loops = 0;
+let redCheckerPic = document.createElement("redCheckerPic");
+redCheckerPic.src = "images/RedCheckers.png";
+
 
 function preload() {
   this.load.image('checkerBoardPic', 'images/1n020.jpg');
@@ -126,6 +129,7 @@ function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
+    document.getElementById("table").getElementsByClassName("")
     whoseMove = 2;
   } else if (blackMove.length == 6) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
@@ -246,4 +250,16 @@ if (whoseMove == 1) {
   moveBlackPiece(blackMove);
 } else if (whoseMove == 2) {
   playerMoves();
+}
+
+for (let i = 0; i < 8; i++) {
+  for (let j = 0; j < 8; j++) {
+    if (checkerBoard[i][j] == 1) {
+      this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
+    } else if (checkerBoard[i][j] == 2) {
+      this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
+    } else if (checkerBoard[i][j] == 0) {
+
+    }
+  }
 }
