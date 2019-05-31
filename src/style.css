@@ -1,4 +1,246 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto+Slab');
+
+/* Colors : https://www.colorbox.io/#steps=8#hue_start=252#hue_end=359#hue_curve=easeInCirc#sat_start=100#sat_end=100#sat_curve=linear#sat_rate=129#lum_start=0#lum_end=83#lum_curve=easeInQuart#minor_steps_map=0 */
+
 * {
     margin: 0;
 }
 
+.blackCheckers {
+    height: 65px;
+    width: 65px;
+    background-color: #000;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.checkerPiece::before {
+    content: '\25CF';
+    font-size: 60px;
+}
+
+.checkerPiece {
+    text-align: center;
+    margin: auto;
+}
+
+.red {
+    color: #D40004;
+}
+
+.black {
+    color: #000;
+}
+
+table {
+    background-color: #D40004;
+    padding: 25px;
+    display: inline-block;
+    border: 15px solid #4500C0;
+}
+
+td {
+    height: 75px;
+    width: 75px;
+    background: #FFF;
+    vertical-align: middle;
+}
+
+
+tr:nth-child(even) td:nth-child(odd), 
+tr:nth-child(odd) td:nth-child(even)
+{
+    background-color: #000;
+}
+
+
+.sidestat {
+    vertical-align: top;
+    margin: 10px 10% 0 10px;
+    padding: 10px;
+    width: 25%;
+    display: inline-block;
+    background-color: #8B00D0;
+}
+
+/* Borrowed Henry's CSS template with a little modification */
+
+html {
+    overflow: auto;
+}
+
+
+/* navbar */
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 1% 0;
+    top: 0;
+    padding-left: 10px;
+}
+
+
+h1 {
+    margin: 0;
+    background-color: #6100CB;
+    padding: 10px;
+}
+
+nav div {
+    padding: 10px;
+    height: 2em;
+    vertical-align: middle;
+}
+
+button {
+    background-color: #2E00A6;
+    color: #FFF;
+    border: none;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px;
+    margin: 2px;
+}
+
+button:hover {
+    background-color: #4500C0;
+}
+
+button:active {
+    background-color: #FFF;
+}
+
+button a {
+    text-decoration: none;
+}
+
+
+/* main content */
+
+body {
+    margin:0;
+    color: #FFF;
+    background: #09002C;
+    background-attachment: local, scroll;
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-size: 950px;
+    background-position: top right;
+    font-family: 'Montserrat', sans-serif;
+}
+
+main {
+    margin-left: auto;
+    background-color: #140057;
+    max-width: 75%;
+    position: relative;
+    align-content: stretch;
+    margin: 0 auto 1px 2em;
+    padding: 1.5em;
+}
+
+h2 {
+    font-size: 28px;
+    color: #2E00A6;
+}
+
+p {
+    font-family: 'Roboto Slab', serif;
+}
+
+#cover {
+    margin-top: -30%;
+}
+
+#cover img {
+    width: 100%;
+}
+
+a {
+    color: #56A3D2;
+}
+
+input {
+    background-color: #6100CB;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    border: none;
+}
+
+
+/* span test  */
+
+span {
+    margin: 5px;
+}
+
+
+/* dialog box  */
+
+.diag-box {
+    width: 75%;
+    border: 1px solid #d8d8d8;
+    padding: 5px;
+    margin-bottom: 50px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-family: 'Roboto Slab', serif;
+}
+
+.diag-box .tag {
+    text-align: right;
+    margin: 10px -20px -20px 20px;
+    font-family: 'Montserrat', sans-serif;
+    margin-right: -20px;
+}
+
+.diag-box mark {
+    background-color: #282D30;
+    color: #FFF;
+    padding: 5px;
+    font-weight: normal;
+    line-height: 28px;
+}
+
+.script {
+    font-weight: normal;
+    text-align: center;
+}
+
+.slider {
+    -webkit-appearance: none;
+    height: 10px;
+    background: #d8d8d8;
+    border-radius: 10%;
+    outline: none;
+}
+
+
+/* borrowed from w3schools.com */
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    width: 20px;
+    /* Set a specific slider handle width */
+    height: 20px;
+    /* Slider handle height */
+    background: #56A3D2;
+    /* Green background */
+    cursor: grab
+    /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    /* Set a specific slider handle width */
+    height: 20px;
+    /* Slider handle height */
+    background: #56A3D2;
+    /* Green background */
+    cursor: grab;
+    /* Cursor on hover */
+}
