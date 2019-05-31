@@ -1,5 +1,6 @@
 let gameOn = confirm("Ready to play?");
-const config = {
+//Previous Phaser Code
+/* const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 800,
@@ -12,6 +13,7 @@ const config = {
 };
 
 let game = new Phaser.Game(config)
+*/
 
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
@@ -41,19 +43,9 @@ let redMove = '';
 let blackMove = '';
 let clicks = 0;
 let loops = 0;
-let redCheckerPic = document.createElement("redCheckerPic");
-redCheckerPic.src = "images/RedCheckers.png";
 
-
-function preload() {
-  this.load.image('checkerBoardPic', 'images/1n020.jpg');
-
-}
-
-function create() {
-  this.add.text(195, 86, "Checkers Game!",
-    { font: "50px Arial", fill: "#9fc2f9" });
-  this.add.image(386, 436, 'checkerBoardPic');
+//Previous code for adding circles
+/*
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (checkerBoard[i][j] == 1) {
@@ -63,8 +55,7 @@ function create() {
       }
     }
   }
-  console.log("load success!")
-}
+*/
 
 //Finds every possible computer move and assigns them to 1 of 3 arrays
 //depending on how beneficial they are
@@ -129,13 +120,21 @@ function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    let $newMove = blackMove.charAt(2).toString() + 
-    $('#table').find('')
+    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
+    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
+    $('#table').find($newMove).addClass("checkerPiece black");
+    $('#table').find($oldMove).removeClass("checkerPiece black");
     whoseMove = 2;
   } else if (blackMove.length == 6) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
     checkerBoard[blackMove.charAt(4)][blackMove.charAt(5)] = 0;
+    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
+    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
+    let $capture = '#' + blackMove.charAt(4).toString() + blackMove.charAt(5).toString();
+    $('#table').find($newMove).addClass("checkerPiece black");
+    $('#table').find($oldMove).removeClass("checkerPiece black");
+    $('#table').find($capture).removeClass("checkerPiece red");
     blackCaptures += 1;
     whoseMove = 2;
   } else if (blackMove.length == 8) {
@@ -143,6 +142,14 @@ function moveBlackPiece(blackMove) {
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
     checkerBoard[blackMove.charAt(4)][blackMove.charAt(5)] = 0;
     checkerBoard[blackMove.charAt(6)][blackMove.charAt(7)] = 0;
+    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
+    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
+    let $capture = '#' + blackMove.charAt(4).toString() + blackMove.charAt(5).toString();
+    let $capture2 = '#' + blackMove.charAt(6).toString() + blackMove.charAt(7).toString();
+    $('#table').find($newMove).addClass("checkerPiece black");
+    $('#table').find($oldMove).removeClass("checkerPiece black");
+    $('#table').find($capture).removeClass("checkerPiece red");
+    $('#table').find($capture2).removeClass("checkerPiece red");
     blackCaptures += 2;
     whoseMove = 2;
   }
@@ -220,6 +227,10 @@ function moveRedPiece() {
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
         console.log("hello");
         console.log(checkerBoard);
+        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
+        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
+        $('#table').find($newMove).addClass("checkerPiece red");
+        $('#table').find($oldMove).removeClass("checkerPiece red");
         whoseMove = 1;
         console.log(whoseMove);
       } else if (legalPlayerMoves[i].length == 6) {
@@ -227,6 +238,12 @@ function moveRedPiece() {
         checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
         checkerBoard[legalPlayerMoves[i].charAt(4)][legalPlayerMoves[i].charAt(5)] = 0;
         redCaptures += 1;
+        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
+        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
+        let $capture = '#' + legalPlayerMoves[i].charAt(4).toString() + legalPlayerMoves[i].charAt(5).toString();
+        $('#table').find($newMove).addClass("checkerPiece red");
+        $('#table').find($oldMove).removeClass("checkerPiece red");
+        $('#table').find($capture).removeClass("checkerPiece black");
         console.log("helloo");
         whoseMove = 1;
       } else if (legalPlayerMoves[i].length == 8) {
@@ -235,6 +252,14 @@ function moveRedPiece() {
         checkerBoard[legalPlayerMoves[i].charAt(4)][legalPlayerMoves[i].charAt(5)] = 0;
         checkerBoard[legalPlayerMoves[i].charAt(6)][legalPlayerMoves[i].charAt(7)] = 0;
         redCaptures += 2;
+        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
+        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
+        let $capture = '#' + legalPlayerMoves[i].charAt(4).toString() + legalPlayerMoves[i].charAt(5).toString();
+        let $capture2 = '#' + legalPlayerMoves[i].charAt(6).toString() + legalPlayerMoves[i].charAt(7).toString();
+        $('#table').find($newMove).addClass("checkerPiece red");
+        $('#table').find($oldMove).removeClass("checkerPiece red");
+        $('#table').find($capture).removeClass("checkerPiece black");
+        $('#table').find($capture2).removeClass("checkerPiece black");
         console.log("hellooo");
         whoseMove = 1;
       }
@@ -251,16 +276,4 @@ if (whoseMove == 1) {
   moveBlackPiece(blackMove);
 } else if (whoseMove == 2) {
   playerMoves();
-}
-
-for (let i = 0; i < 8; i++) {
-  for (let j = 0; j < 8; j++) {
-    if (checkerBoard[i][j] == 1) {
-      this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
-    } else if (checkerBoard[i][j] == 2) {
-      this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
-    } else if (checkerBoard[i][j] == 0) {
-
-    }
-  }
 }
