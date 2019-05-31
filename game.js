@@ -120,6 +120,7 @@ function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
+
     let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
     let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
     $('#table').find($newMove).addClass("checkerPiece black");
@@ -199,20 +200,11 @@ function mousePosition(event) {
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(legalPlayerMoves) {
-  if (mouseX > 107 && mouseX < 662 && mouseY < 712 && mouseY > 155 && whoseMove == 2 && clicks < 2) {
-    mouseX = mouseX - 108;
-    mouseY = mouseY - 158;
-    selectedX = Math.floor(mouseX / 70);
-    selectedY = Math.floor(mouseY / 70);
-    console.log(selectedX);
-    console.log(selectedY);
-    redMove = redMove + selectedY.toString() + selectedX.toString();
-    console.log(redMove);
-    clicks++;
-    if (clicks == 2) {
-      console.log("clicks");
-      console.log(legalPlayerMoves);
-      moveRedPiece();
+  for (i in $("table")) {
+    for (p in $("tr")) {
+      p.onclick(() => {
+        return p.id
+      })
     }
   }
 }
@@ -269,11 +261,13 @@ function moveRedPiece() {
   }
 }
 
-if (whoseMove == 1) {
-  blackMoves();
-  moreFavourableMoves(possibleMoves);
-  chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
-  moveBlackPiece(blackMove);
-} else if (whoseMove == 2) {
-  playerMoves();
-}
+$(document).ready(() => {
+  if (whoseMove == 1) {
+    blackMoves();
+    moreFavourableMoves(possibleMoves);
+    chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
+    moveBlackPiece(blackMove);
+  } else if (whoseMove == 2) {
+    playerMoves();
+  }
+})
