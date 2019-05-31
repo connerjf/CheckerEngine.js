@@ -129,7 +129,8 @@ function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    document.getElementById("table").getElementsByClassName("")
+    let $newMove = blackMove.charAt(2).toString() + 
+    $('#table').find('')
     whoseMove = 2;
   } else if (blackMove.length == 6) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
