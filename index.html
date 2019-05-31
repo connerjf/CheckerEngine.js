@@ -8,9 +8,10 @@
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="game.js"></script>
 </head>
 
-<body onmousedown="">
+<body onclick="mousePosition(event)">
   <div id="navbar">
     <h1>CheckerEngine.js</h1>
   </div>
@@ -96,7 +97,6 @@
         <td id="76" class="checkerPiece red"></td>
         <td id="77"></td>
       </tr>
-      <script src="game.js"></script>
     </table>
     <div class="sidestat">
       <span>RED MOVE</span>

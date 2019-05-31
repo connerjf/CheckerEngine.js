@@ -129,8 +129,8 @@ function moveBlackPiece(blackMove) {
   if (blackMove.length == 4) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
     checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    let $newMove = blackMove.charAt(2).toString() + 
-    $('#table').find('')
+    let $newMove = blackMove.charAt(2).toString() +
+      $('#table').find('')
     whoseMove = 2;
   } else if (blackMove.length == 6) {
     checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
@@ -192,20 +192,11 @@ function mousePosition(event) {
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(legalPlayerMoves) {
-  if (mouseX > 107 && mouseX < 662 && mouseY < 712 && mouseY > 155 && whoseMove == 2 && clicks < 2) {
-    mouseX = mouseX - 108;
-    mouseY = mouseY - 158;
-    selectedX = Math.floor(mouseX / 70);
-    selectedY = Math.floor(mouseY / 70);
-    console.log(selectedX);
-    console.log(selectedY);
-    redMove = redMove + selectedY.toString() + selectedX.toString();
-    console.log(redMove);
-    clicks++;
-    if (clicks == 2) {
-      console.log("clicks");
-      console.log(legalPlayerMoves);
-      moveRedPiece();
+  for (i in $("table")) {
+    for (p in $("tr")) {
+      p.onclick(() => {
+        return p.id
+      })
     }
   }
 }
@@ -244,23 +235,14 @@ function moveRedPiece() {
   }
 }
 
-if (whoseMove == 1) {
-  blackMoves();
-  moreFavourableMoves(possibleMoves);
-  chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
-  moveBlackPiece(blackMove);
-} else if (whoseMove == 2) {
-  playerMoves();
-}
-
-for (let i = 0; i < 8; i++) {
-  for (let j = 0; j < 8; j++) {
-    if (checkerBoard[i][j] == 1) {
-      this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
-    } else if (checkerBoard[i][j] == 2) {
-      this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
-    } else if (checkerBoard[i][j] == 0) {
-
-    }
+$(document).ready(() => {
+  if (whoseMove == 1) {
+    blackMoves();
+    moreFavourableMoves(possibleMoves);
+    chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
+    moveBlackPiece(blackMove);
+  } else if (whoseMove == 2) {
+    playerMoves();
   }
-}
+})
+
