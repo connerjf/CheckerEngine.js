@@ -1,20 +1,3 @@
-let gameOn = confirm("Ready to play?");
-//Previous Phaser Code
-/* const config = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 800,
-  backgroundColor: "#6d0000",
-  scene: {
-    preload,
-    create,
-    moveRedPiece
-  }
-};
-
-let game = new Phaser.Game(config)
-*/
-
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 0, 1, 0, 1, 0],
@@ -31,32 +14,45 @@ let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
 let whoseMove = 2;
-let stalemate = false;
-let winner = 0;
-let blackCaptures = 0;
-let redCaptures = 0;
-let mouseX;
-let mouseY;
-let selectedX;
-let selectedY;
-let redMove = '';
-let blackMove = '';
-let clicks = 0;
-let loops = 0;
+let stalemate;
+let winner;
+let captures = [0, 0];
+let redMove;
+let blackMove;
+let clicks = [];
 
-//Previous code for adding circles
-/*
+//Finds the legal moves for the player
+function playerMoves() {
+  legalPlayerMoves = []
+  //Check every piece on the board
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      if (checkerBoard[i][j] == 1) {
-        this.add.circle(j * 69 + 144, i * 70 + 194, 32, 0x00000);
-      } else if (checkerBoard[i][j] == 2) {
-        this.add.circle(j * 69 + 144, i * 69 + 194, 32, 0xFF0000);
+      //if it's a black piece than find the possible moves
+      if (checkerBoard[i][j] == 2) {
+        for (let rright = -1; rright <= 1; rright += 2) {
+          try {
+            //If the spaces diagonally forwards are clear then add to moves list
+            if (checkerBoard[i - 1][j + rright] === 0) {
+              legalPlayerMoves.push(String(i) + String(j) + String(i - 1) + String(j + rright));
+              //If the spaces diagonally forwards are enemy pieces and the pieces
+              //two spaces diagonally are clear, then hop and capture piece
+            } else if (checkerBoard[i - 1][j + rright] == 1 && checkerBoard[i - 2][j + (rright * 2)] === 0) {
+              legalPlayerMoves.push(String(i) + String(j) + String(i - 2) + String(j + (rright * 2)) + String(i - 1) + String(j + rright));
+              let doubleMidPosRight = j + (rright * 2);
+              let doubleMidPosDown = i - 2;
+              for (let right2 = -1; right2 <= 1; right2 += 2) {
+                if (checkerBoard[doubleMidPosDown - 1][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown - 2][doubleMidPosRight + (right2 * 2)] === 0) {
+                  legalPlayerMoves.push(String(i) + String(j) + String(i - 4) + String(doubleMidPosRight + (right2 * 2)) + String(i - 1) + String(j + rright) + String(doubleMidPosDown - 1) + String(doubleMidPosRight + right2));
+                  break;
+                }
+              }
+            }
+          } catch (err) { }
+        }
       }
     }
   }
-*/
-
+}
 //Finds every possible computer move and assigns them to 1 of 3 arrays
 //depending on how beneficial they are
 function blackMoves() {
@@ -92,10 +88,10 @@ function blackMoves() {
 
 //Checks if any of the possibleMoves moves a piece to the center pieces,
 //if so it adds that piece to the favourableMoves array
-function moreFavourableMoves(possibleMoves) {
-  for (let i = 0; i < possibleMoves.length; i++) {
-    if (possibleMoves[i].charAt(2) == 3 || possibleMoves[i].charAt(2) == 4) {
-      if (possibleMoves[i].charAt(3) == 3 || possibleMoves[i].charAt(3) == 4) {
+function moreFavourableMoves(p) {
+  for (let i = 0; i < p.length; i++) {
+    if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+      if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
         favourableMoves.push(possibleMoves[i]);
       }
     }
@@ -103,171 +99,137 @@ function moreFavourableMoves(possibleMoves) {
 }
 
 //Computer determines which move to make
-function chooseBlackMove(possibleMoves, favourableMoves, bestMoves) {
-  if (bestMoves.length > 0) {
-    blackMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-  } else if (favourableMoves.length > 0) {
-    blackMove = favourableMoves[Math.floor(Math.random() * favourableMoves.length)];
-  } else if (possibleMoves.length > 0) {
-    blackMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+function chooseBlackMove(p, f, b) {
+  if (b.length > 0) {
+    blackMove = bestMoves[Math.floor(Math.random() * b.length)];
+  } else if (f.length > 0) {
+    blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
+  } else if (p.length > 0) {
+    blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
   } else {
     blackStalemate = true;
   }
 }
 
-//Turns the string for moves into actual moves on the computer by changing the main checkerBoard array
-function moveBlackPiece(blackMove) {
-  if (blackMove.length == 4) {
-    checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
-    checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
+//Changes the move string of the players move to an actual change in the main checkerBoard array
+function movePiece(player) {
+  if (player == 2) {
+    for (let i = 0; i < legalPlayerMoves.length; i++) {
+      if (legalPlayerMoves[i].slice(0, 4) === redMove) {
 
-    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
-    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
-    $('#table').find($newMove).addClass("checkerPiece black");
-    $('#table').find($oldMove).removeClass("checkerPiece black");
-    whoseMove = 2;
-  } else if (blackMove.length == 6) {
-    checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
-    checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    checkerBoard[blackMove.charAt(4)][blackMove.charAt(5)] = 0;
-    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
-    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
-    let $capture = '#' + blackMove.charAt(4).toString() + blackMove.charAt(5).toString();
-    $('#table').find($newMove).addClass("checkerPiece black");
-    $('#table').find($oldMove).removeClass("checkerPiece black");
-    $('#table').find($capture).removeClass("checkerPiece red");
-    blackCaptures += 1;
-    whoseMove = 2;
-  } else if (blackMove.length == 8) {
-    checkerBoard[blackMove.charAt(0)][blackMove.charAt(1)] = 0;
-    checkerBoard[blackMove.charAt(2)][blackMove.charAt(3)] = 1;
-    checkerBoard[blackMove.charAt(4)][blackMove.charAt(5)] = 0;
-    checkerBoard[blackMove.charAt(6)][blackMove.charAt(7)] = 0;
-    let $newMove = '#' + blackMove.charAt(2).toString() + blackMove.charAt(3).toString();
-    let $oldMove = '#' + blackMove.charAt(0).toString() + blackMove.charAt(1).toString();
-    let $capture = '#' + blackMove.charAt(4).toString() + blackMove.charAt(5).toString();
-    let $capture2 = '#' + blackMove.charAt(6).toString() + blackMove.charAt(7).toString();
-    $('#table').find($newMove).addClass("checkerPiece black");
-    $('#table').find($oldMove).removeClass("checkerPiece black");
-    $('#table').find($capture).removeClass("checkerPiece red");
-    $('#table').find($capture2).removeClass("checkerPiece red");
-    blackCaptures += 2;
-    whoseMove = 2;
-  }
+        captures[2] += (legalPlayerMoves.length - 4) / 2
+        if (legalPlayerMoves[i].length == 4) {
+          // sweet sweet linear algebra
+          updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
 
-}
+        } else {
 
-//Finds the legal moves for the player
-function playerMoves() {
-  //Check every piece on the board
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      //if it's a black piece than find the possible moves
-      if (checkerBoard[i][j] == 2) {
-        for (let rright = -1; rright <= 1; rright += 2) {
-          try {
-            //If the spaces diagonally forwards are clear then add to moves list
-            if (checkerBoard[i - 1][j + rright] === 0) {
-              legalPlayerMoves.push(String(i) + String(j) + String(i - 1) + String(j + rright));
-              //If the spaces diagonally forwards are enemy pieces and the pieces
-              //two spaces diagonally are clear, then hop and capture piece
-            } else if (checkerBoard[i - 1][j + rright] == 1 && checkerBoard[i - 2][j + (rright * 2)] === 0) {
-              legalPlayerMoves.push(String(i) + String(j) + String(i - 2) + String(j + (rright * 2)) + String(i - 1) + String(j + rright));
-              let doubleMidPosRight = j + (rright * 2);
-              let doubleMidPosDown = i - 2;
-              for (let right2 = -1; right2 <= 1; right2 += 2) {
-                if (checkerBoard[doubleMidPosDown - 1][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown - 2][doubleMidPosRight + (right2 * 2)] === 0) {
-                  legalPlayerMoves.push(String(i) + String(j) + String(i - 4) + String(doubleMidPosRight + (right2 * 2)) + String(i - 1) + String(j + rright) + String(doubleMidPosDown - 1) + String(doubleMidPosRight + right2));
-                  break;
-                }
-              }
-            }
-          } catch (err) { }
+          caps = []
+          for (let c = 0; c < (legalPlayerMoves.length - 4) / 2; c++) {
+            caps.push(legalPlayerMoves[i].slice((c * 2) + 2, (c * 2) + 4))
+          }
+          updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps)
+
         }
+        redMove = '';
+        whoseMove = 1;
+        blackMoves();
+        moreFavourableMoves(possibleMoves);
+        chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
+        movePiece(1);
       }
     }
+  } else if (player == 1) {
+
+    captures[1] += (blackMove.length - 4) / 2
+    if (blackMove.length == 4) {
+
+      updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4));
+
+    } else {
+
+      caps = []
+      for (let c = 0; c < (blackMove.length - 4) / 2; c++) {
+        caps.push(blackMove.slice((c * 2) + 2, (c * 2) + 4))
+      }
+
+      updateBoard(2, blackMove.slice(0, 2), blackMove.slice(2, 4), caps)
+    }
+    whoseMove = 2;
   }
 }
 
-//Gets the position of a mouse click from the player and then calls the selectRedPiece function
-function mousePosition(event) {
-  mouseX = event.pageX;
-  mouseY = event.pageY;
-  console.log(mouseX + "hello" + mouseY);
-  selectRedPiece(legalPlayerMoves);
-}
+
 
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
-function selectRedPiece(legalPlayerMoves) {
-  for (i in $("table")) {
-    for (p in $("tr")) {
-      p.onclick(() => {
-        return p.id
-      })
-    }
+function selectRedPiece(c) {
+  if ($("#" + c.slice(0, 2)).hasClass("red")) {
+    //  do player move 
+    redMove = c
+    movePiece(2)
+  } else {
+    console.log(c)
   }
 }
 
-//Changes the move string of the players move to an actual change in the main checkerBoard array
-function moveRedPiece() {
-  for (let i = 0; i < legalPlayerMoves.length; i++) {
-    if (legalPlayerMoves[i].slice(0, 4) === redMove) {
-      console.log("slice");
-      if (legalPlayerMoves[i].length == 4) {
-        checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
-        checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
-        console.log("hello");
-        console.log(checkerBoard);
-        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
-        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
-        $('#table').find($newMove).addClass("checkerPiece red");
-        $('#table').find($oldMove).removeClass("checkerPiece red");
-        whoseMove = 1;
-        console.log(whoseMove);
-      } else if (legalPlayerMoves[i].length == 6) {
-        checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
-        checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
-        checkerBoard[legalPlayerMoves[i].charAt(4)][legalPlayerMoves[i].charAt(5)] = 0;
-        redCaptures += 1;
-        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
-        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
-        let $capture = '#' + legalPlayerMoves[i].charAt(4).toString() + legalPlayerMoves[i].charAt(5).toString();
-        $('#table').find($newMove).addClass("checkerPiece red");
-        $('#table').find($oldMove).removeClass("checkerPiece red");
-        $('#table').find($capture).removeClass("checkerPiece black");
-        console.log("helloo");
-        whoseMove = 1;
-      } else if (legalPlayerMoves[i].length == 8) {
-        checkerBoard[legalPlayerMoves[i].charAt(0)][legalPlayerMoves[i].charAt(1)] = 0;
-        checkerBoard[legalPlayerMoves[i].charAt(2)][legalPlayerMoves[i].charAt(3)] = 2;
-        checkerBoard[legalPlayerMoves[i].charAt(4)][legalPlayerMoves[i].charAt(5)] = 0;
-        checkerBoard[legalPlayerMoves[i].charAt(6)][legalPlayerMoves[i].charAt(7)] = 0;
-        redCaptures += 2;
-        let $newMove = '#' + legalPlayerMoves[i].charAt(2).toString() + legalPlayerMoves[i].charAt(3).toString();
-        let $oldMove = '#' + legalPlayerMoves[i].charAt(0).toString() + legalPlayerMoves[i].charAt(1).toString();
-        let $capture = '#' + legalPlayerMoves[i].charAt(4).toString() + legalPlayerMoves[i].charAt(5).toString();
-        let $capture2 = '#' + legalPlayerMoves[i].charAt(6).toString() + legalPlayerMoves[i].charAt(7).toString();
-        $('#table').find($newMove).addClass("checkerPiece red");
-        $('#table').find($oldMove).removeClass("checkerPiece red");
-        $('#table').find($capture).removeClass("checkerPiece black");
-        $('#table').find($capture2).removeClass("checkerPiece black");
-        console.log("hellooo");
-        whoseMove = 1;
-      }
-      redMove = '';
-      clicks = 0;
+
+function updateBoard(player, start, finish, capture = []) {
+  playerID = ['black', 'red']
+  if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
+    // define shorter names
+    startSpace = checkerBoard[start.charAt(0)][start.charAt(1)]
+    endSpace = checkerBoard[finish.charAt(0)][finish.charAt(1)]
+
+    // Checks if player is actually at the start
+    if (player === startSpace) {
+      startSpace = 0
+
+      $('#' + start).removeClass('checkerPiece ' + playerID[player - 1])
+      $('#' + finish).addClass('checkerPiece ' + playerID[player - 1])
+
+      endSpace = player
+
+      // captures
+      playerID.slice(player - 1)
+      capture.forEach(i => {
+        checkerBoard[i.charAt(0)][i.charAt(1)] = 0
+        $('#' + i).removeClass('checkerPiece ' + playerID[0])
+      });
+
+    } else {
+      return Error("NOT VALID MOVE " + startSpace + endSpace);
     }
+  } else {
+    return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard")
   }
 }
+
 
 $(document).ready(() => {
-  if (whoseMove == 1) {
-    blackMoves();
-    moreFavourableMoves(possibleMoves);
-    chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
-    moveBlackPiece(blackMove);
-  } else if (whoseMove == 2) {
-    playerMoves();
-  }
+
+  $("tbody tr td").on("click", function () {
+    clicks.push(String(this.id))
+    $(".helper").off()
+    $(".helper").removeClass("checkerPiece helper")
+
+    playerMoves()
+
+    legalPlayerMoves.forEach(i => {
+      if (i.slice(0, 2) == this.id) {
+        $("#" + i.slice(2, 4)).addClass("checkerPiece helper");
+      }
+    });
+    if (clicks.length == 1) {
+      $(".helper").on("click", function () {
+        legalPlayerMoves.forEach(i => {
+          if (i.slice(0, 5) == clicks.join('')) {
+            selectRedPiece(i)
+            clicks = []
+          }
+        });
+      });
+    }
+  });
+
 })

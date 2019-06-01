@@ -7,23 +7,26 @@
 }
 
 
-.checkerPiece::after {
-    content: '\25CF'; 
-    font-size: 60px;
-    /* temp solution, must find alternative */
-}
-
 .checkerPiece {
     text-align: center;
     margin: auto;
+    background-size: 85%;
+    background-position: center;
+    background-repeat: no-repeat
 }
 
+/* TODO convert to SVG */
+
 .red {
-    color: #D40004;
+    background-image: url("../images/RedCheckers.svg");
 }
 
 .black {
-    color: #000;
+    background-image: url("../images/BlackCheckers.svg");
+}
+
+.helper {
+    background-image: url("../images/HelperCheckers.svg")
 }
 
 table {
