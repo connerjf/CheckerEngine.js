@@ -3,8 +3,8 @@ let checkerBoard = [
   [1, 0, 1, 0, 1, 0, 1, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 0, 2, 0, 2, 0, 2, 0],
+  [0, 0, 0, 0, 2, 0, 0, 0],
+  [2, 0, 2, 0, 0, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ]
@@ -20,6 +20,9 @@ let captures = [0, 0];
 let redMove;
 let blackMove;
 let clicks = [];
+let playerID = ['black', 'red'];
+
+
 
 //Finds the legal moves for the player
 function playerMoves() {
@@ -79,7 +82,7 @@ function blackMoves() {
                   let tripleMidPosDown = i + (doubleMidPosDown * 2);
                   for (let right3 = -1; right3 <= 1; right3 += 2) {
                     if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
-                      
+
                     }
                   }
                   break;
@@ -182,7 +185,17 @@ function selectRedPiece(c) {
 
 
 function updateBoard(player, start, finish, capture = []) {
-  playerID = ['black', 'red']
+  for (let i = 0; i < 77; i++) {
+    if (i <= 9) {
+      i = '0' + String(i)
+    }
+    board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)]
+    if (board == 0) {
+      $('#' + i).removeClass()
+      continue
+    }
+    $('#' + i).addClass(playerID[board - 1])
+  }
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // define shorter names
     startSpace = checkerBoard[start.charAt(0)][start.charAt(1)]
@@ -209,6 +222,21 @@ function updateBoard(player, start, finish, capture = []) {
     }
   } else {
     return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard")
+  }
+}
+
+// updates board from the console
+function devUpdate() {
+  for (let i = 0; i < 77; i++) {
+    if (i <= 9) {
+      i = '0' + String(i)
+    }
+    board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)]
+    if (board == 0) {
+      $('#' + i).removeClass()
+      continue
+    }
+    $('#' + i).addClass(playerID[board - 1])
   }
 }
 
