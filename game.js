@@ -82,7 +82,7 @@ function blackMoves() {
                   let tripleMidPosDown = i + (doubleMidPosDown * 2);
                   for (let right3 = -1; right3 <= 1; right3 += 2) {
                     if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
-                      
+
                     }
                   }
                   break;
@@ -186,9 +186,13 @@ function selectRedPiece(c) {
 
 function updateBoard(player, start, finish, capture = []) {
   for (let i = 0; i < 77; i++) {
+    if (i <= 9) {
+      i = '0' + String(i)
+    }
     board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)]
     if (board == 0) {
-      pass
+      $('#' + i).removeClass()
+      continue
     }
     $('#' + i).addClass(playerID[board - 1])
   }
@@ -224,9 +228,13 @@ function updateBoard(player, start, finish, capture = []) {
 // updates board from the console
 function devUpdate() {
   for (let i = 0; i < 77; i++) {
+    if (i <= 9) {
+      i = '0' + String(i)
+    }
     board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)]
     if (board == 0) {
-      pass
+      $('#' + i).removeClass()
+      continue
     }
     $('#' + i).addClass(playerID[board - 1])
   }
