@@ -73,8 +73,15 @@ function blackMoves() {
               let doubleMidPosRight = j + (right * 2);
               let doubleMidPosDown = i + 2;
               for (let right2 = -1; right2 <= 1; right2 += 2) {
-                if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] === 0) {
+                if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
                   bestMoves.push(String(i) + String(j) + String(i + 4) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
+                  let tripleMidPosRight = j + (doubleMidPosRight * 2);
+                  let tripleMidPosDown = i + (doubleMidPosDown * 2);
+                  for (let right3 = -1; right3 <= 1; right3 += 2) {
+                    if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
+                      
+                    }
+                  }
                   break;
                 }
               }
@@ -165,7 +172,7 @@ function movePiece(player) {
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
   if ($("#" + c.slice(0, 2)).hasClass("red")) {
-    //  do player move 
+    //  do player move
     redMove = c
     movePiece(2)
   } else {
