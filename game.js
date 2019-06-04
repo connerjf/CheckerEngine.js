@@ -1,10 +1,10 @@
 let checkerBoard = [
-  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 1, 0, 0],
   [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 0, 0, 1],
+  [0, 0, 0, 0, 1, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 2, 0, 0, 0],
-  [2, 0, 2, 0, 0, 0, 2, 0],
+  [2, 0, 2, 0, 1, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ]
@@ -13,6 +13,7 @@ let possibleMoves = [];
 let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
+let tripleMoves = '';
 let whoseMove = 2;
 let stalemate;
 let winner;
@@ -80,12 +81,13 @@ function blackMoves() {
                   bestMoves.push(String(i) + String(j) + String(i + 4) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
                   let tripleMidPosRight = j + (doubleMidPosRight * 2);
                   let tripleMidPosDown = i + (doubleMidPosDown * 2);
+                  console.log("hello");
                   for (let right3 = -1; right3 <= 1; right3 += 2) {
                     if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
-
+                      tripleMoves = (String(i) + String(j) + String(i + 6) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
+                      break;
                     }
                   }
-                  break;
                 }
               }
             }
@@ -99,18 +101,22 @@ function blackMoves() {
 //Checks if any of the possibleMoves moves a piece to the center pieces,
 //if so it adds that piece to the favourableMoves array
 function moreFavourableMoves(p) {
-  for (let i = 0; i < p.length; i++) {
-    if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
-      if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
-        favourableMoves.push(possibleMoves[i]);
+  if (tripleMoves.length > 0) {
+    for (let i = 0; i < p.length; i++) {
+      if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+        if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
+          favourableMoves.push(possibleMoves[i]);
+        }
       }
     }
   }
 }
 
 //Computer determines which move to make
-function chooseBlackMove(p, f, b) {
-  if (b.length > 0) {
+function chooseBlackMove(p, f, b, t) {
+  if (t) {
+    blackMove = tripleMoves;
+  } else if (b.length > 0) {
     blackMove = bestMoves[Math.floor(Math.random() * b.length)];
   } else if (f.length > 0) {
     blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
@@ -124,6 +130,7 @@ function chooseBlackMove(p, f, b) {
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function movePiece(player) {
   if (player == 2) {
+    console.log(legalPlayerMoves);
     for (let i = 0; i < legalPlayerMoves.length; i++) {
       if (legalPlayerMoves[i].slice(0, 4) === redMove) {
 
@@ -145,12 +152,13 @@ function movePiece(player) {
         whoseMove = 1;
         blackMoves();
         moreFavourableMoves(possibleMoves);
-        chooseBlackMove(possibleMoves, favourableMoves, bestMoves);
+        chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
         movePiece(1);
       }
     }
   } else if (player == 1) {
-
+    //console.log(tripleMoves);
+    //console.log(possibleMoves);
     captures[1] += (blackMove.length - 4) / 2
     if (blackMove.length == 4) {
 
@@ -176,10 +184,10 @@ function movePiece(player) {
 function selectRedPiece(c) {
   if ($("#" + c.slice(0, 2)).hasClass("red")) {
     //  do player move
-    redMove = c
-    movePiece(2)
+    redMove = c;
+    movePiece(2);
   } else {
-    console.log(c)
+    console.log(c);
   }
 }
 
@@ -187,19 +195,19 @@ function selectRedPiece(c) {
 function updateBoard(player, start, finish, capture = []) {
   for (let i = 0; i < 77; i++) {
     if (i <= 9) {
-      i = '0' + String(i)
+      i = '0' + String(i);
     }
     board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)]
     if (board == 0) {
-      $('#' + i).removeClass()
-      continue
+      $('#' + i).removeClass();
+      continue;
     }
     $('#' + i).addClass(playerID[board - 1])
   }
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // define shorter names
-    startSpace = checkerBoard[start.charAt(0)][start.charAt(1)]
-    endSpace = checkerBoard[finish.charAt(0)][finish.charAt(1)]
+    startSpace = checkerBoard[start.charAt(0)][start.charAt(1)];
+    endSpace = checkerBoard[finish.charAt(0)][finish.charAt(1)];
 
     // Checks if player is actually at the start
     if (player === startSpace) {
