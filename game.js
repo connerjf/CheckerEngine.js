@@ -1,12 +1,12 @@
 let checkerBoard = [
-  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 1, 0, 0],
   [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 2, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 0, 0, 1],
+  [0, 0, 0, 0, 0, 0, 1, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 2, 0, 0, 0, 0, 0, 0],
-  [0, 0, 2, 0, 2, 0, 2, 0],
+  [2, 0, 2, 0, 2, 0, 1, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
-  [2, 0, 0, 0, 2, 0, 2, 0],
+  [2, 0, 2, 0, 2, 0, 2, 0],
 ];
 let possibleMoves = [];
 let favourableMoves = [];
@@ -65,6 +65,10 @@ let blackStalemate;
         }
       }
     }
+  }
+
+  function mandatoryTripleMoves() {
+
   }
   //Finds every possible computer move and assigns them to 1 of 3 arrays
   //depending on how beneficial they are
@@ -128,14 +132,11 @@ let blackStalemate;
       blackMove = tripleMoves;
     } else if (b.length > 0) {
       blackMove = bestMoves[Math.floor(Math.random() * b.length)];
-    }
-    else if (f.length > 0) {
+    } else if (f.length > 0) {
       blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
-    }
-    else if (p.length > 0) {
+    } else if (p.length > 0) {
       blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
-    }
-    else {
+    } else {
       blackStalemate = true;
     }
   }
@@ -144,7 +145,7 @@ let blackStalemate;
     if (player == 2) {
       console.log(legalPlayerMoves);
       for (let i = 0; i < legalPlayerMoves.length; i++) {
-        if (legalPlayerMoves[i] === redMove) {
+        if (legalPlayerMoves[i] == redMove) {
           captures[2] += (legalPlayerMoves.length - 4) / 2;
           if (legalPlayerMoves[i].length == 4) {
             // sweet sweet linear algebra
@@ -244,6 +245,7 @@ let blackStalemate;
         $(".helper").off();
         $(".helper").removeClass("helper");
         playerMoves();
+        mandatoryTripleMoves();
         console.log(legalPlayerMoves)
         // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
         legalPlayerMoves.forEach(i => {
