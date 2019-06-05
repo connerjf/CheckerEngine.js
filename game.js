@@ -125,15 +125,15 @@ function movePiece(player) {
   if (player == 2) {
     for (let i = 0; i < legalPlayerMoves.length; i++) {
       if (legalPlayerMoves[i] === redMove) {
-        captures[2] += (legalPlayerMoves.length - 4) / 2;
+        captures[1] += (legalPlayerMoves[i].length - 4) / 2;
         if (legalPlayerMoves[i].length == 4) {
           // sweet sweet linear algebra
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
         }
         else {
           caps = [];
-          for (let c = 0; c < (legalPlayerMoves.length - 4) / 2; c++) {
-            caps.push(legalPlayerMoves[i].slice((c * 2) + 2, (c * 2) + 4));
+          for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
+            caps.push(legalPlayerMoves[i].slice(c, c + 1));
           }
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps);
         }
@@ -147,14 +147,17 @@ function movePiece(player) {
     }
   }
   else if (player == 1) {
-    captures[1] += (blackMove.length - 4) / 2;
+    setTimeout(function () {
+      $(".sidestat").innerHTML = "Computer Thinking..."
+    }, (blackMove.length * 50))
+    captures[0] += (blackMove.length - 4) / 2;
     if (blackMove.length == 4) {
       updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4));
     }
     else {
       caps = [];
-      for (let c = 0; c < (blackMove.length - 4) / 2; c++) {
-        caps.push(blackMove.slice((c * 2) + 2, (c * 2) + 4));
+      for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
+        caps.push(legalPlayerMoves[i].slice(c, c + 1));
       }
       updateBoard(2, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
     }
@@ -224,7 +227,7 @@ $(document).ready(() => {
     $(".helper").off();
     $(".helper").removeClass("checkerPiece helper");
     playerMoves();
-    console.log(legalPlayerMoves)
+    $(".sidestat").innerHTML = "RED MOVE"
     // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
     legalPlayerMoves.forEach(i => {
       if (i.slice(0, 2) == this.id) {
