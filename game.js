@@ -138,6 +138,7 @@ let blackStalemate;
     else {
       blackStalemate = true;
     }
+
   }
 
 }
@@ -177,8 +178,8 @@ function movePiece(player) {
     }
     else {
       caps = [];
-      for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
-        caps.push(legalPlayerMoves[i].slice(c, c + 1));
+      for (let c = 4; c < blackMove.length; c += 2) {
+        caps.push(blackMove.slice(c, c + 1));
       }
       whoseMove = 2;
     }
