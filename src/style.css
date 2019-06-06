@@ -23,9 +23,9 @@
 
 table {
     background-color: #D40004;
-    padding: 25px;
+    padding: 20px;
     display: inline-block;
-    border: 15px solid #4500C0;
+    border: 20px solid #4500C0;
 }
 
 td {
@@ -41,7 +41,7 @@ td {
 }
 
 
-tr:nth-child(even) td:nth-child(odd), 
+tr:nth-child(even) td:nth-child(odd),
 tr:nth-child(odd) td:nth-child(even)
 {
     background-color: #FFF;
@@ -79,6 +79,7 @@ h1 {
     margin: 0;
     background-color: #6100CB;
     padding: 10px;
+    font-weight: bold;
 }
 
 nav div {
@@ -114,7 +115,6 @@ button a {
 
 body {
     margin:0;
-    color: #FFF;
     background: #09002C;
     background-attachment: local, scroll;
     background-size: 75%;
@@ -126,7 +126,6 @@ body {
 
 main {
     margin-left: auto;
-    background-color: #140057;
     max-width: 75%;
     position: relative;
     align-content: stretch;
