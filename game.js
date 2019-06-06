@@ -1,10 +1,10 @@
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 0],
   [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 0, 0, 1],
+  [0, 0, 0, 0, 0, 0, 1, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 0, 2, 0, 2, 0, 2, 0],
+  [2, 0, 2, 0, 2, 0, 1, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
@@ -22,6 +22,7 @@ let blackMove;
 let clicks = [];
 let playerID = ['black', 'red'];
 let blackStalemate;
+let blackKingMoves = [];
 
   //Finds the legal moves for the player
   function playerMoves() {
@@ -48,9 +49,7 @@ let blackStalemate;
                     legalPlayerMoves.push(String(i) + String(j) + String(doubleMidPosDown - 2) + String(doubleMidPosRight + (right2 * 2)) + String(i - 1) + String(j + right) + String(doubleMidPosDown - 1) + String(doubleMidPosRight + right2));
                     let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                     let tripleMidPosDown = i - 4;
-                    console.log("hello");
                     for (let right3 = -1; right3 <= 1; right3 += 2) {
-                      console.log("helloo");
                       if (checkerBoard[tripleMidPosDown - 1][tripleMidPosRight + right3] == 1 && checkerBoard[tripleMidPosDown - 2][tripleMidPosRight + (right3 * 2)] == 0) {
                         legalPlayerMoves.push(String(i) + String(j) + String(tripleMidPosDown - 2) + String(tripleMidPosRight + (right3 * 2)) + String(i - 1) + String(j + right) + String(doubleMidPosDown - 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown - 1) + String(tripleMidPosRight + right3));
                         break;
@@ -106,7 +105,6 @@ let blackStalemate;
                     bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
                     let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                     let tripleMidPosDown = i + 4;
-                    console.log("hello");
                     for (let right3 = -1; right3 <= 1; right3 += 2) {
                       if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
                         tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
@@ -119,22 +117,40 @@ let blackStalemate;
             }
             catch (err) { }
           }
+        } else if (checkerBoard[i][j] == 3) {
+          let currentPosRight = i;
+          let currentPosDown = j;
+          blackKingMoves.push(String(i) + String(j));
+          for (let right = -1; right <= 1; right += 2) {
+            for (let down = -1; down <= 1; down += 2) {
+              try {
+                if (checkerBoard[currentPosDown + down][currentPosRight + right] == 2 && checkerBoard[currentPosDown + (down * 2)][currentPosRight + (right * 2)] == 0) {
+                  currentPosRight += (right * 2);
+                  currentPosDown += (down * 2);
+                  blackKingMoves[blackKingMoves.length - 1] += String(currentPosRight) + String(currentPosDown);
+                } else if (checkerBoard[currentPosDown + down][currentPosRight + right] == 0 || checkerBoard[currentPosDown + (down * 2)][currentPosRight + (right * 2)] == 2) {
+                  blackKingMoves[blackKingMoves.length - 1].splice(2, 0, )
+              }
+            } catch (err) { }
+          }
         }
       }
     }
   }
+}
   //Checks if any of the possibleMoves moves a piece to the center pieces,
   //if so it adds that piece to the favourableMoves array
   function moreFavourableMoves(p) {
-    if (tripleMoves.length == 0) {
-      console.log("moreFavourableMoves");
+    if (tripleMoves.length == 0 && possibleMoves.length > 0) {
       for (let i = 0; i < p.length; i++) {
         if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
           if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
             favourableMoves.push(possibleMoves[i]);
+            possibleMoves.splice(i);
           }
         }
       }
+      favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
     }
   }
   //Computer determines which move to make
