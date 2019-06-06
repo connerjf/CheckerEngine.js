@@ -58,8 +58,7 @@ let blackKingMoves = [];
                   }
                 }
               }
-            }
-          } catch (err) { }
+            } catch (err) { }
         }
       }
     }
