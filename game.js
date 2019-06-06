@@ -1,5 +1,5 @@
 let checkerBoard = [
-  [0, 1, 0, 1, 0, 1, 0, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 0, 1, 0, 1, 0],
   [0, 1, 0, 1, 0, 0, 0, 1],
   [0, 0, 0, 0, 0, 0, 1, 0],
@@ -58,26 +58,23 @@ let blackKingMoves = [];
                   }
                 }
               }
-            }
-            catch (err) { }
-          }
+            } catch (err) { }
         }
       }
     }
   }
-
-  function mandatoryThreePieceMoves() {
-    for (let i = 0; i < legalPlayerMoves.length; i++) {
-      if (legalPlayerMoves[i].length == 10) {
-        legalPlayerMoves.splice(i - 2, 2);
-        break;
-      }
+}
+function mandatoryThreePieceMoves() {
+  for (let i = 0; i < legalPlayerMoves.length; i++) {
+    if (legalPlayerMoves[i].length == 10) {
+      legalPlayerMoves.splice(i - 2, 2);
+      break;
     }
-    for (let i = 0; i < legalPlayerMoves.length; i++) {
-      if (legalPlayerMoves[i].length == 8) {
-        legalPlayerMoves.splice(i - 1, 1);
-        break;
-      }
+  }
+  for (let i = 0; i < legalPlayerMoves.length; i++) {
+    if (legalPlayerMoves[i].length == 8) {
+      legalPlayerMoves.splice(i - 1, 1);
+      break;
     }
   }
   //Finds every possible computer move and assigns them to 1 of 3 arrays
@@ -153,50 +150,64 @@ let blackKingMoves = [];
       favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
     }
   }
-  //Computer determines which move to make
-  function chooseBlackMove(p, f, b, t) {
-    if (t) {
-      blackMove = tripleMoves;
-    } else if (b.length > 0) {
-      blackMove = bestMoves[Math.floor(Math.random() * b.length)];
-    } else if (f.length > 0) {
-      blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
-    } else if (p.length > 0) {
-      blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
-    } else {
-      blackStalemate = true;
-    }
+}
 
+//Computer determines which move to make
+function chooseBlackMove(p, f, b, t) {
+  if (t) {
+    blackMove = tripleMoves;
+  } else if (b.length > 0) {
+    blackMove = bestMoves[Math.floor(Math.random() * b.length)];
+  } else if (f.length > 0) {
+    blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
+  } else if (p.length > 0) {
+    blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
+  } else {
+    blackStalemate = true;
   }
+
+}
+
+
+
 
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function movePiece(player) {
   if (player == 2) {
-    console.log(legalPlayerMoves);
+    console.log(redMove);
     for (let i = 0; i < legalPlayerMoves.length; i++) {
       if (legalPlayerMoves[i] == redMove) {
+        console.log("match")
         captures[1] += (legalPlayerMoves[i].length - 4) / 2;
         if (legalPlayerMoves[i].length == 4) {
+          console.log(legalPlayerMoves[i].slice(0, 2))
+          console.log(legalPlayerMoves[i].slice(2, 4))
           // sweet sweet linear algebra
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
         } else {
+          console.log("capture detect")
           caps = [];
           for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
-            caps.push(legalPlayerMoves[i].slice(c, c + 1));
+            caps.push(legalPlayerMoves[i].slice(c, c + 2));
           }
+          updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps);
           redMove = '';
           whoseMove = 1;
         }
-          blackMoves();
-          moreFavourableMoves(possibleMoves);
-          chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
-          movePiece(1);
+
+        if (captures[1] == 12) {
+          // win() Does not exist yet. PLEASE ADD
         }
+        blackMoves();
+        moreFavourableMoves(possibleMoves);
+        chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
+        movePiece(1);
       }
+    }
   } else if (player == 1) {
     setTimeout(function () {
-      $(".sidestat").innerHTML = "Computer Thinking..."
-    }, (blackMove.length * 50))
+      $("#player").innerHTML = "Computer Thinking... " + (possibleMoves.length * 50)
+    }, (possibleMoves.length * 50))
     captures[0] += (blackMove.length - 4) / 2;
     if (blackMove.length == 4) {
       updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4));
@@ -210,60 +221,64 @@ function movePiece(player) {
     }
   }
 }
-  //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
-  //Once you click twice, the moveRedPiece function is called
-  function selectRedPiece(c) {
-    if ($("#" + c.slice(0, 2)).hasClass("red")) {
-      //  do player move
-      redMove = c;
-      movePiece(2);
-    } else {
-      console.log(c);
-    }
+//Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
+//Once you click twice, the moveRedPiece function is called
+function selectRedPiece(c) {
+  console.log(c)
+  if ($("#" + c.slice(0, 2)).hasClass("red")) {
+    //  do player move
+    redMove = c;
+    movePiece(2);
+  } else {
+    console.log(c);
   }
+}
 
-  function updateBoard(player, start, finish, capture = []) {
-    guiUpdate();
-    if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
-      // Checks if player is actually at the start
-      if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
-        checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
-        $('#' + start).removeClass(playerID[player - 1]);
-        $('#' + finish).addClass(playerID[player - 1]);
-        checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
-        // captures
-        playerID.slice(player - 1);
-        capture.forEach(i => {
-          checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
-          $('#' + i).removeClass(playerID[0]);
-        });
-      } else {
-        return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
-      }
+function updateBoard(player, start, finish, capture = []) {
+  guiUpdate();
+  if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
+    // Checks if player is actually at the start
+    if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
+      checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
+      $('#' + start).removeClass(playerID[player - 1]);
+      $('#' + finish).addClass(playerID[player - 1]);
+      checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
+      // captures
+      playerID.slice(player - 1);
+      capture.forEach(i => {
+        console.log(i)
+        checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
+        $('#' + i).removeClass(playerID[0]);
+      });
     } else {
-      return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
+      return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
     }
+  } else {
+    return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
   }
+}
 
-  // updates board from the console
-  function guiUpdate() {
-    for (let i = 0; i < 77; i++) {
-      if (i <= 9) {
-        i = '0' + String(i);
-      }
-      let board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)];
-      if (board == 0) {
-        $('#' + i).removeClass();
-        continue;
-      }
-      $('#' + i).addClass(playerID[board - 1]);
+// updates board from the console
+function guiUpdate() {
+  for (let i = 0; i < 77; i++) {
+    if (i <= 9) {
+      i = '0' + String(i);
     }
+    let board = checkerBoard[String(i).charAt(0)][String(i).charAt(1)];
+    if (board == 0) {
+      $('#' + i).removeClass();
+      continue;
+    }
+    $('#' + i).addClass(playerID[board - 1]);
+
   }
+}
+
 
 $(document).ready(() => {
   guiUpdate();
-  $("tbody tr td").on("click", function () {
-    console.log("loaded");
+  $("tbody tr").on("click", "td", function () {
+    console.log("id clicked: " + this.id)
     clicks.push(String(this.id));
     // check empty clicks and multiple clicks
     if (clicks[0] != this.id && !$('#' + this.id).hasClass('helper')) {
@@ -272,37 +287,31 @@ $(document).ready(() => {
       clicks = [this.id]
     }
     $(".helper").off();
-    $(".helper").removeClass("checkerPiece helper");
+    $(".helper").removeClass("helper");
+
     playerMoves();
     mandatoryThreePieceMoves();
-    $(".sidestat").innerHTML = "RED MOVE";
-    // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
-    legalPlayerMoves.forEach(i => {
-      if (i.slice(0, 2) == this.id) {
-        $("#" + i.slice(2, 4)).addClass("checkerPiece helper");
-      }
-    });
+    $("#player").innerHTML = "RED MOVE"
     if (clicks.length == 1) {
-        console.log(legalPlayerMoves);
-        // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
-        legalPlayerMoves.forEach(i => {
-          if (i.slice(0, 2) == this.id) {
-            $("#" + i.slice(2, 4)).addClass("helper");
-          }
-        });
-        if (clicks.length == 1) {
-          $(".helper").on("click", function () {
-            console.log(legalPlayerMoves);
-            legalPlayerMoves.forEach(i => {
-              console.log(i.slice(0, 4));
-              if (i.slice(0, 4) == clicks.join('')) {
-                selectRedPiece(i);
-                clicks = [];
-              }
-            });
-            console.log("done")
-          });
+      // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
+      legalPlayerMoves.forEach(i => {
+        if (i.slice(0, 2) == this.id) {
+          $("#" + i.slice(2, 4)).addClass("helper");
         }
+      });
+
+
+    }
+  });
+  $("tbody tr").on("click", ".helper", function () {
+    console.log("click");
+    legalPlayerMoves.forEach(i => {
+      if (i.slice(0, 4) == clicks.join('')) {
+        selectRedPiece(i);
+        clicks = [];
+        console.log("done")
       }
     });
   });
+
+});
