@@ -116,6 +116,7 @@ button a {
 body {
     margin:0;
     background: #09002C;
+    color: #FFF;
     background-attachment: local, scroll;
     background-size: 75%;
     background-repeat: no-repeat;
