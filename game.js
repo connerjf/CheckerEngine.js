@@ -1,12 +1,12 @@
 let checkerBoard = [
-  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 1, 0, 0],
   [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 2, 0, 1, 0, 1, 0, 1],
+  [0, 1, 0, 1, 0, 1, 0, 1],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 2, 0, 0, 0, 0, 0, 0],
-  [0, 0, 2, 0, 2, 0, 2, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [2, 0, 2, 0, 2, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
-  [2, 0, 0, 0, 2, 0, 2, 0],
+  [2, 0, 2, 0, 2, 0, 2, 0],
 ];
 let possibleMoves = [];
 let favourableMoves = [];
@@ -66,6 +66,21 @@ let blackStalemate;
       }
     }
   }
+
+  function mandatoryThreePieceMoves() {
+    for (let i = 0; i < legalPlayerMoves.length; i++) {
+      if (legalPlayerMoves[i].length == 10) {
+        legalPlayerMoves.splice(i - 2, 2);
+        break;
+      }
+    }
+    for (let i = 0; i < legalPlayerMoves.length; i++) {
+      if (legalPlayerMoves[i].length == 8) {
+        legalPlayerMoves.splice(i - 1, 1);
+        break;
+      }
+    }
+  }
   //Finds every possible computer move and assigns them to 1 of 3 arrays
   //depending on how beneficial they are
   function blackMoves() {
@@ -73,7 +88,7 @@ let blackStalemate;
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         //if it's a black piece than find the possible moves
-        if (checkerBoard[i][j] === 1) {
+        if (checkerBoard[i][j] == 1) {
           for (let right = -1; right <= 1; right += 2) {
             try {
               //If the spaces diagonally forwards are clear then add to moveslist
@@ -114,8 +129,8 @@ let blackStalemate;
     if (tripleMoves.length == 0) {
       console.log("moreFavourableMoves");
       for (let i = 0; i < p.length; i++) {
-        if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
-          if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
+        if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
+          if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
             favourableMoves.push(possibleMoves[i]);
           }
         }
@@ -128,47 +143,41 @@ let blackStalemate;
       blackMove = tripleMoves;
     } else if (b.length > 0) {
       blackMove = bestMoves[Math.floor(Math.random() * b.length)];
-    }
-    else if (f.length > 0) {
+    } else if (f.length > 0) {
       blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
-    }
-    else if (p.length > 0) {
+    } else if (p.length > 0) {
       blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
-    }
-    else {
+    } else {
       blackStalemate = true;
     }
 
   }
 
-}
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function movePiece(player) {
   if (player == 2) {
     console.log(legalPlayerMoves);
     for (let i = 0; i < legalPlayerMoves.length; i++) {
-      if (legalPlayerMoves[i] === redMove) {
+      if (legalPlayerMoves[i] == redMove) {
         captures[1] += (legalPlayerMoves[i].length - 4) / 2;
         if (legalPlayerMoves[i].length == 4) {
           // sweet sweet linear algebra
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
-        }
-        else {
+        } else {
           caps = [];
           for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
             caps.push(legalPlayerMoves[i].slice(c, c + 1));
           }
           redMove = '';
           whoseMove = 1;
+        }
           blackMoves();
           moreFavourableMoves(possibleMoves);
           chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
           movePiece(1);
         }
       }
-    }
-  }
-  else if (player == 1) {
+  } else if (player == 1) {
     setTimeout(function () {
       $(".sidestat").innerHTML = "Computer Thinking..."
     }, (blackMove.length * 50))
@@ -184,6 +193,7 @@ function movePiece(player) {
       whoseMove = 2;
     }
   }
+}
   //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
   //Once you click twice, the moveRedPiece function is called
   function selectRedPiece(c) {
@@ -195,6 +205,7 @@ function movePiece(player) {
       console.log(c);
     }
   }
+
   function updateBoard(player, start, finish, capture = []) {
     guiUpdate();
     if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
@@ -210,15 +221,14 @@ function movePiece(player) {
           checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
           $('#' + i).removeClass(playerID[0]);
         });
-      }
-      else {
+      } else {
         return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
       }
-    }
-    else {
+    } else {
       return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
     }
   }
+
   // updates board from the console
   function guiUpdate() {
     for (let i = 0; i < 77; i++) {
@@ -234,10 +244,10 @@ function movePiece(player) {
     }
   }
 
-}
 $(document).ready(() => {
   guiUpdate();
   $("tbody tr td").on("click", function () {
+    console.log("loaded");
     clicks.push(String(this.id));
     // check empty clicks and multiple clicks
     if (clicks[0] != this.id && !$('#' + this.id).hasClass('helper')) {
@@ -248,7 +258,8 @@ $(document).ready(() => {
     $(".helper").off();
     $(".helper").removeClass("checkerPiece helper");
     playerMoves();
-    $(".sidestat").innerHTML = "RED MOVE"
+    mandatoryThreePieceMoves();
+    $(".sidestat").innerHTML = "RED MOVE";
     // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
     legalPlayerMoves.forEach(i => {
       if (i.slice(0, 2) == this.id) {
@@ -256,7 +267,7 @@ $(document).ready(() => {
       }
     });
     if (clicks.length == 1) {
-        console.log(legalPlayerMoves)
+        console.log(legalPlayerMoves);
         // legalPlayerMoves: aabbccc... a = first pos b = final pos c = captures
         legalPlayerMoves.forEach(i => {
           if (i.slice(0, 2) == this.id) {
@@ -265,10 +276,9 @@ $(document).ready(() => {
         });
         if (clicks.length == 1) {
           $(".helper").on("click", function () {
-            console.log(legalPlayerMoves)
+            console.log(legalPlayerMoves);
             legalPlayerMoves.forEach(i => {
               console.log(i.slice(0, 4));
-
               if (i.slice(0, 4) == clicks.join('')) {
                 selectRedPiece(i);
                 clicks = [];
@@ -277,5 +287,6 @@ $(document).ready(() => {
             console.log("done")
           });
         }
-      });
+      }
+    });
   });
