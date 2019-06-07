@@ -1,8 +1,8 @@
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 0, 0, 1],
-  [0, 0, 0, 0, 0, 0, 1, 0],
+  [0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [2, 0, 2, 0, 2, 0, 1, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
@@ -35,12 +35,12 @@ let blackKingMoves = [];
           for (let right = -1; right <= 1; right += 2) {
             try {
               //If the spaces diagonally forwards are clear then add to moves list
-              if (checkerBoard[i - 1][j + right] === 0) {
+              if (checkerBoard[i - 1][j + right] == 0) {
                 legalPlayerMoves.push(String(i) + String(j) + String(i - 1) + String(j + right));
                 //If the spaces diagonally forwards are enemy pieces and the pieces
                 //two spaces diagonally are clear, then hop and capture piece
               }
-              else if (checkerBoard[i - 1][j + right] == 1 && checkerBoard[i - 2][j + (right * 2)] == 0) {
+              else if (checkerBoard[i - 1][j + right] == 1 && checkerBoard[i - 2][j + (right * 2)] == 0 || checkerBoard[i - 1][j + right] == 3 && checkerBoard[i - 2][j + (right * 2)] == 0) {
                 legalPlayerMoves.push(String(i) + String(j) + String(i - 2) + String(j + (right * 2)) + String(i - 1) + String(j + right));
                 let doubleMidPosRight = j + (right * 2);
                 let doubleMidPosDown = i - 2;
@@ -77,6 +77,7 @@ function mandatoryThreePieceMoves() {
       break;
     }
   }
+}
   //Finds every possible computer move and assigns them to 1 of 3 arrays
   //depending on how beneficial they are
   function blackMoves() {
@@ -115,26 +116,44 @@ function mandatoryThreePieceMoves() {
             catch (err) { }
           }
         } else if (checkerBoard[i][j] == 3) {
-          let currentPosRight = i;
-          let currentPosDown = j;
-          blackKingMoves.push(String(i) + String(j));
           for (let right = -1; right <= 1; right += 2) {
             for (let down = -1; down <= 1; down += 2) {
-              try {
-                if (checkerBoard[currentPosDown + down][currentPosRight + right] == 2 && checkerBoard[currentPosDown + (down * 2)][currentPosRight + (right * 2)] == 0) {
-                  currentPosRight += (right * 2);
-                  currentPosDown += (down * 2);
-                  blackKingMoves[blackKingMoves.length - 1] += String(currentPosRight) + String(currentPosDown);
-                } else if (checkerBoard[currentPosDown + down][currentPosRight + right] == 0 || checkerBoard[currentPosDown + (down * 2)][currentPosRight + (right * 2)] == 2) {
-                  blackKingMoves[blackKingMoves.length - 1].splice(2, 0, )
+            try {
+              //If the spaces diagonally forwards are clear then add to moveslist
+              if (checkerBoard[i + down][j + right] === 0) {
+                possibleMoves.push(String(i) + String(j) + String(i + down) + String(j + right));
+                //If the spaces diagonally forwards are enemy pieces and the pieces
+                //two spaces diagonally are clear, then hop and capture piece
               }
-            } catch (err) { }
+              else if (checkerBoard[i + down][j + right] == 2 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
+                favourableMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
+                let doubleMidPosRight = j + (right * 2);
+                let doubleMidPosDown = i + (down * 2);
+                for (let right2 = -1; right2 <= 1; right2 += 2) {
+                  for (let down2 = -1; down2 <= 1; down2 += 2) {
+                  if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
+                    bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
+                    let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
+                    let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
+                    for (let right3 = -1; right3 <= 1; right3 += 2) {
+                      for (let down3 = -1; down3 <= 1; down3 += 2) {
+                      if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
+                        tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
+                        break;
+                      }
+                    }
+                  }
+                }
+                }
+              }
+              }
+            }
+            catch (err) { }
           }
         }
       }
     }
   }
-}
   //Checks if any of the possibleMoves moves a piece to the center pieces,
   //if so it adds that piece to the favourableMoves array
   function moreFavourableMoves(p) {
@@ -150,6 +169,9 @@ function mandatoryThreePieceMoves() {
       favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
     }
   }
+
+function orderingKingMoves(b) {
+console.log(b);
 }
 
 //Computer determines which move to make
@@ -168,24 +190,26 @@ function chooseBlackMove(p, f, b, t) {
 
 }
 
-
+function win() {
+  alert("You won!!!!");
+}
 
 
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function movePiece(player) {
   if (player == 2) {
-    console.log(redMove);
+    //console.log(redMove);
     for (let i = 0; i < legalPlayerMoves.length; i++) {
       if (legalPlayerMoves[i] == redMove) {
-        console.log("match")
+        //console.log("match")
         captures[1] += (legalPlayerMoves[i].length - 4) / 2;
         if (legalPlayerMoves[i].length == 4) {
-          console.log(legalPlayerMoves[i].slice(0, 2))
-          console.log(legalPlayerMoves[i].slice(2, 4))
+        //  console.log(legalPlayerMoves[i].slice(0, 2))
+          //console.log(legalPlayerMoves[i].slice(2, 4))
           // sweet sweet linear algebra
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
         } else {
-          console.log("capture detect")
+        //  console.log("capture detect")
           caps = [];
           for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
             caps.push(legalPlayerMoves[i].slice(c, c + 2));
@@ -196,9 +220,10 @@ function movePiece(player) {
         }
 
         if (captures[1] == 12) {
-          // win() Does not exist yet. PLEASE ADD
+          win();
         }
         blackMoves();
+        orderingKingMoves(blackKingMoves);
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
         movePiece(1);
@@ -224,13 +249,13 @@ function movePiece(player) {
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
-  console.log(c)
+  //console.log(c)
   if ($("#" + c.slice(0, 2)).hasClass("red")) {
     //  do player move
     redMove = c;
     movePiece(2);
   } else {
-    console.log(c);
+  //  console.log(c);
   }
 }
 
@@ -246,7 +271,7 @@ function updateBoard(player, start, finish, capture = []) {
       // captures
       playerID.slice(player - 1);
       capture.forEach(i => {
-        console.log(i)
+        //console.log(i)
         checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
         $('#' + i).removeClass(playerID[0]);
       });
@@ -278,7 +303,7 @@ function guiUpdate() {
 $(document).ready(() => {
   guiUpdate();
   $("tbody tr").on("click", "td", function () {
-    console.log("id clicked: " + this.id)
+    //console.log("id clicked: " + this.id)
     clicks.push(String(this.id));
     // check empty clicks and multiple clicks
     if (clicks[0] != this.id && !$('#' + this.id).hasClass('helper')) {
@@ -304,12 +329,12 @@ $(document).ready(() => {
     }
   });
   $("tbody tr").on("click", ".helper", function () {
-    console.log("click");
+    //console.log("click");
     legalPlayerMoves.forEach(i => {
       if (i.slice(0, 4) == clicks.join('')) {
         selectRedPiece(i);
         clicks = [];
-        console.log("done")
+      //  console.log("done")
       }
     });
   });
