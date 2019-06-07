@@ -13,8 +13,16 @@
     background-image: url("../images/RedCheckers.svg");
 }
 
+.rKing {
+    background-image: url("../images/redKing.svg");
+}
+
 .black {
     background-image: url("../images/BlackCheckers.svg");
+}
+
+.bKing {
+    background-image: url("../images/blackKing.svg");
 }
 
 .helper {

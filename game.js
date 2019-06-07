@@ -4,7 +4,7 @@ let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 0, 2, 0, 2, 0, 1, 0],
+  [2, 0, 2, 0, 2, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
@@ -154,18 +154,21 @@ function blackMoves() {
       }
     }
   }
-}
-//Checks if any of the possibleMoves moves a piece to the center pieces,
-//if so it adds that piece to the favourableMoves array
-function moreFavourableMoves(p) {
-  if (tripleMoves.length == 0 && possibleMoves.length > 0) {
-    for (let i = 0; i < p.length; i++) {
-      if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
-        if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
-          favourableMoves.push(possibleMoves[i]);
-          possibleMoves.splice(i);
+  //Checks if any of the possibleMoves moves a piece to the center pieces,
+  //if so it adds that piece to the favourableMoves array
+  function moreFavourableMoves(p) {
+    if (tripleMoves.length == 0 && possibleMoves.length > 0) {
+      for (let i = 0; i < p.length; i++) {
+        if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
+          if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
+            favourableMoves.push(possibleMoves[i]);
+            possibleMoves.splice(i);
+          }
         }
       }
+      favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
+    } else if (possibleMoves.length == 0) {
+      console.log("no possible moves");
     }
     favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
   }
@@ -188,6 +191,10 @@ function chooseBlackMove(p, f, b, t) {
   } else {
     blackStalemate = true;
   }
+  tripleMoves = [];
+  bestMoves = [];
+  favourableMoves = [];
+  possibleMoves = [];
 
 }
 
@@ -224,6 +231,7 @@ function movePiece(player) {
           win();
         }
         blackMoves();
+        console.log(possibleMoves);
         orderingKingMoves(blackKingMoves);
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
