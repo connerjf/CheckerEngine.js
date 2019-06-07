@@ -4,7 +4,7 @@ let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 0, 2, 0, 2, 0, 1, 0],
+  [2, 0, 2, 0, 2, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
@@ -154,6 +154,7 @@ function mandatoryThreePieceMoves() {
       }
     }
   }
+}
   //Checks if any of the possibleMoves moves a piece to the center pieces,
   //if so it adds that piece to the favourableMoves array
   function moreFavourableMoves(p) {
@@ -167,11 +168,13 @@ function mandatoryThreePieceMoves() {
         }
       }
       favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
+    } else if (possibleMoves.length == 0) {
+      console.log("no possible moves");
     }
   }
 
 function orderingKingMoves(b) {
-console.log(b);
+  console.log(b);
 }
 
 //Computer determines which move to make
@@ -187,6 +190,10 @@ function chooseBlackMove(p, f, b, t) {
   } else {
     blackStalemate = true;
   }
+  tripleMoves = [];
+  bestMoves = [];
+  favourableMoves = [];
+  possibleMoves = [];
 
 }
 
@@ -223,6 +230,7 @@ function movePiece(player) {
           win();
         }
         blackMoves();
+        console.log(possibleMoves);
         orderingKingMoves(blackKingMoves);
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
