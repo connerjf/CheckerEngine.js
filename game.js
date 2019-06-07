@@ -81,6 +81,10 @@ function mandatoryThreePieceMoves() {
   //Finds every possible computer move and assigns them to 1 of 3 arrays
   //depending on how beneficial they are
   function blackMoves() {
+    tripleMoves = [];
+    bestMoves = [];
+    favourableMoves = [];
+    possibleMoves = [];
     //Check every piece on the board
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
@@ -190,11 +194,6 @@ function chooseBlackMove(p, f, b, t) {
   } else {
     blackStalemate = true;
   }
-  tripleMoves = [];
-  bestMoves = [];
-  favourableMoves = [];
-  possibleMoves = [];
-
 }
 
 function win() {
