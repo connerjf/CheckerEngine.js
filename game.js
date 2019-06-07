@@ -154,6 +154,7 @@ function mandatoryThreePieceMoves() {
       }
     }
   }
+}
   //Checks if any of the possibleMoves moves a piece to the center pieces,
   //if so it adds that piece to the favourableMoves array
   function moreFavourableMoves(p) {
@@ -187,7 +188,6 @@ function chooseBlackMove(p, f, b, t) {
   } else {
     blackStalemate = true;
   }
-
 }
 
 function win() {
