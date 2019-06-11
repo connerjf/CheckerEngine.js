@@ -1,11 +1,11 @@
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0],
+  [1, 0, 1, 0, 0, 0, 4, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 4, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 3, 0, 0],
   [2, 0, 2, 0, 2, 0, 2, 0],
-  [0, 2, 0, 2, 0, 2, 0, 2],
+  [0, 2, 0, 2, 0, 2, 0, 0],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
 let possibleMoves = [];
@@ -18,7 +18,7 @@ let stalemate;
 let winner;
 let captures = [0, 0];
 let redMove;
-let blackMove;
+let blackMove = '';
 let clicks = [];
 let playerID = ['black', 'red'];
 let blackStalemate;
@@ -59,6 +59,41 @@ function playerMoves() {
             }
           } catch (err) { }
         }
+      } else if (checkerBoard[i][j] == 4) {
+        for (let right = -1; right <= 1; right += 2) {
+          for (let down = -1; down <= 1; down += 2) {
+            try {
+              //If the spaces diagonally forwards are clear then add to moves list
+              if (checkerBoard[i + down][j + right] == 0) {
+                legalPlayerMoves.push(String(i) + String(j) + String(i + down) + String(j + right));
+                //If the spaces diagonally forwards are enemy pieces and the pieces
+                //two spaces diagonally are clear, then hop and capture piece
+              }
+              else if (checkerBoard[i + down][j + right] == 1 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0 || checkerBoard[i + down][j + right] == 3 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
+                legalPlayerMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
+                let doubleMidPosRight = j + (right * 2);
+                let doubleMidPosDown = i + (down * 2);
+                for (let right2 = -1; right2 <= 1; right2 += 2) {
+                  for (let down2 = -1; down2 <= 1; down2 += 2) {
+                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
+                      legalPlayerMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
+                      let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
+                      let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
+                      for (let right3 = -1; right3 <= 1; right3 += 2) {
+                        for (let down3 = -1; down3 <= 1; down3 += 2) {
+                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 1 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
+                            legalPlayerMoves.push(String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
+                            break;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (err) { }
+          }
+        }
       }
     }
   }
@@ -80,7 +115,7 @@ function mandatoryThreePieceMoves() {
   //Finds every possible computer move and assigns them to 1 of 4 arrays
   //depending on how beneficial they are
   function blackMoves() {
-    tripleMoves = [];
+    tripleMoves = '';
     bestMoves = [];
     favourableMoves = [];
     possibleMoves = [];
@@ -175,7 +210,7 @@ function mandatoryThreePieceMoves() {
   }
 //Computer determines which move to make
 function chooseBlackMove(p, f, b, t) {
-  if (t) {
+  if (t.length > 0) {
     blackMove = tripleMoves;
   } else if (b.length > 0) {
     blackMove = bestMoves[Math.floor(Math.random() * b.length)];
@@ -203,7 +238,6 @@ function win() {
     ];
     guiUpdate();
   } else {
-    window.close();
   }
 }
 
