@@ -13,7 +13,6 @@ let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
 let tripleMoves = '';
-let whoseMove = 2;
 let stalemate;
 let winner;
 let captures = [0, 0];
@@ -164,7 +163,6 @@ function blackMoves() {
                   }
                 }
               }
-            }
           } catch (err) { }
         }
       } else if (checkerBoard[i][j] == 3) {
@@ -211,7 +209,7 @@ function blackMoves() {
 function moreFavourableMoves(p) {
   if (tripleMoves.length == 0 && possibleMoves.length > 0) {
     for (let i = 0; i < p.length; i++) {
-      if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+      if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p) {
         if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
           favourableMoves.push(possibleMoves[i]);
           possibleMoves.splice(i, 1);
@@ -276,13 +274,11 @@ function movePiece(player) {
           }
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps);
           redMove = '';
-          whoseMove = 1;
         }
 
         if (captures[1] == 12) {
           win();
         }
-        blackPromotions();
         blackMoves();
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
@@ -304,10 +300,6 @@ function movePiece(player) {
     }
 
     updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
-
-
-
-    whoseMove = 2;
     $("#player").html("RED MOVE")
 
     $('td').removeAttr('disabled');
@@ -346,6 +338,8 @@ function updateBoard(player, start, finish, capture = []) {
   } else {
     return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
   }
+  playerPromotions();
+  blackPromotions();
 }
 
 // updates board from the console
