@@ -154,25 +154,26 @@ function blackMoves() {
       }
     }
   }
-  //Checks if any of the possibleMoves moves a piece to the center pieces,
-  //if so it adds that piece to the favourableMoves array
-  function moreFavourableMoves(p) {
-    if (tripleMoves.length == 0 && possibleMoves.length > 0) {
-      for (let i = 0; i < p.length; i++) {
-        if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
-          if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
-            favourableMoves.push(possibleMoves[i]);
-            possibleMoves.splice(i);
-          }
+}
+//Checks if any of the possibleMoves moves a piece to the center pieces,
+//if so it adds that piece to the favourableMoves array
+function moreFavourableMoves(p) {
+  if (tripleMoves.length == 0 && possibleMoves.length > 0) {
+    for (let i = 0; i < p.length; i++) {
+      if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
+        if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
+          favourableMoves.push(possibleMoves[i]);
+          possibleMoves.splice(i);
         }
       }
-      favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
-    } else if (possibleMoves.length == 0) {
-      console.log("no possible moves");
     }
     favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
+  } else if (possibleMoves.length == 0) {
+    console.log("no possible moves");
   }
+  favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
 }
+
 
 function orderingKingMoves(b) {
   console.log(b);
@@ -180,7 +181,7 @@ function orderingKingMoves(b) {
 
 //Computer determines which move to make
 function chooseBlackMove(p, f, b, t) {
-  if (t) {
+  if (t.length > 0) {
     blackMove = tripleMoves;
   } else if (b.length > 0) {
     blackMove = bestMoves[Math.floor(Math.random() * b.length)];
@@ -239,20 +240,20 @@ function movePiece(player) {
       }
     }
   } else if (player == 1) {
-    setTimeout(function () {
-      $("#player").html("Computer Thinking... " + (possibleMoves.length * 50))
-      $('td').attr('disabled', 'disabled');
-      captures[0] += (blackMove.length - 4) / 2;
-      if (blackMove.length == 4) {
-        updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4));
+    console.log(blackMove)
+    $("#player").html("Computer Thinking... " + (possibleMoves.length * 50))
+    $('td').attr('disabled', 'disabled');
+    captures[0] += (blackMove.length - 4) / 2;
+    caps = [];
+    if (blackMove.length != 4) {
+      for (let c = 4; c < blackMove.length; c += 2) {
+        caps.push(blackMove.slice(c, c + 1));
       }
-      else {
-        caps = [];
-        for (let c = 4; c < blackMove.length; c += 2) {
-          caps.push(blackMove.slice(c, c + 1));
-        }
-      }
-    }, (possibleMoves.length * 50))
+    }
+
+    updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
+
+
 
     whoseMove = 2;
     $("#player").html("RED MOVE")
@@ -275,26 +276,27 @@ function selectRedPiece(c) {
 
 function updateBoard(player, start, finish, capture = []) {
   guiUpdate();
-  if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
-    // Checks if player is actually at the start
-    if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
-      checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
-      $('#' + start).removeClass(playerID[player - 1]);
-      $('#' + finish).addClass(playerID[player - 1]);
-      checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
-      // captures
-      playerID.slice(player - 1);
-      capture.forEach(i => {
-        //console.log(i)
-        checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
-        $('#' + i).removeClass(playerID[0]);
-      });
-    } else {
-      return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
-    }
+  // if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
+  // Checks if player is actually at the start
+  console.log(start)
+  if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
+    checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
+    $('#' + start).removeClass(playerID[player - 1]);
+    $('#' + finish).addClass(playerID[player - 1]);
+    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
+    // captures
+    playerID.slice(player - 1);
+    capture.forEach(i => {
+      //console.log(i)
+      checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
+      $('#' + i).removeClass(playerID[0]);
+    });
   } else {
-    return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
+    return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
   }
+  // } else {
+  //   return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
+  // }
 }
 
 // updates board from the console
