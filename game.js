@@ -22,7 +22,6 @@ let blackMove;
 let clicks = [];
 let playerID = ['black', 'red'];
 let blackStalemate;
-let blackKingMoves = [];
 
 //Finds the legal moves for the player
 function playerMoves() {
@@ -78,7 +77,7 @@ function mandatoryThreePieceMoves() {
     }
   }
 }
-  //Finds every possible computer move and assigns them to 1 of 3 arrays
+  //Finds every possible computer move and assigns them to 1 of 4 arrays
   //depending on how beneficial they are
   function blackMoves() {
     tripleMoves = [];
@@ -116,11 +115,9 @@ function mandatoryThreePieceMoves() {
                   }
                 }
               }
-            }
+            } catch (err) { }
           }
-          catch (err) { }
-        }
-      } else if (checkerBoard[i][j] == 3) {
+        } else if (checkerBoard[i][j] == 3) {
         for (let right = -1; right <= 1; right += 2) {
           for (let down = -1; down <= 1; down += 2) {
             try {
@@ -158,15 +155,16 @@ function mandatoryThreePieceMoves() {
       }
     }
   }
+}
   //Checks if any of the possibleMoves moves a piece to the center pieces,
   //if so it adds that piece to the favourableMoves array
   function moreFavourableMoves(p) {
     if (tripleMoves.length == 0 && possibleMoves.length > 0) {
       for (let i = 0; i < p.length; i++) {
-        if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
-          if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
+        if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+          if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
             favourableMoves.push(possibleMoves[i]);
-            possibleMoves.splice(i);
+            possibleMoves.splice(i, 1);
           }
         }
       }
@@ -174,14 +172,7 @@ function mandatoryThreePieceMoves() {
     } else if (possibleMoves.length == 0) {
       console.log("no possible moves");
     }
-    favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
   }
-}
-
-function orderingKingMoves(b) {
-  console.log(b);
-}
-
 //Computer determines which move to make
 function chooseBlackMove(p, f, b, t) {
   if (t) {
@@ -199,6 +190,21 @@ function chooseBlackMove(p, f, b, t) {
 
 function win() {
   alert("You won!!!!");
+  if (confirm("Play again?")) {
+    checkerBoard = [
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+    ];
+    guiUpdate();
+  } else {
+    window.close();
+  }
 }
 
 
@@ -231,9 +237,9 @@ function movePiece(player) {
         }
         blackMoves();
         console.log(possibleMoves);
-        orderingKingMoves(blackKingMoves);
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
+        console.log(possibleMoves);
         movePiece(1);
       }
     }
