@@ -1,11 +1,11 @@
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 0, 0, 4, 0],
+  [1, 0, 1, 0, 1, 0, 1, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [0, 0, 4, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 3, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
   [2, 0, 2, 0, 2, 0, 2, 0],
-  [0, 2, 0, 2, 0, 2, 0, 0],
+  [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
 let possibleMoves = [];
@@ -23,6 +23,13 @@ let clicks = [];
 let playerID = ['black', 'red'];
 let blackStalemate;
 
+function playerPromotions() {
+  for (let i = 0; i < 8; i++) {
+    if (checkerBoard[0][i] == 2) {
+      checkerBoard[0][i] = 4;
+    }
+  }
+}
 //Finds the legal moves for the player
 function playerMoves() {
   legalPlayerMoves = [];
@@ -109,6 +116,14 @@ function mandatoryThreePieceMoves() {
     if (legalPlayerMoves[i].length == 8) {
       legalPlayerMoves.splice(i - 1, 1);
       break;
+    }
+  }
+}
+
+function blackPromotions() {
+  for (let i = 0; i < 8; i++) {
+    if (checkerBoard[7][i] == 1) {
+      checkerBoard[7][i] = 3;
     }
   }
 }
@@ -267,6 +282,7 @@ function movePiece(player) {
         if (captures[1] == 12) {
           win();
         }
+        blackPromotions();
         blackMoves();
         console.log(possibleMoves);
         moreFavourableMoves(possibleMoves);
@@ -283,7 +299,9 @@ function movePiece(player) {
     caps = [];
     if (blackMove.length != 4) {
       for (let c = 4; c < blackMove.length; c += 2) {
+        console.log("caps is working");
         caps.push(blackMove.slice(c, c + 1));
+        console.log(caps);
       }
     }
 
@@ -365,7 +383,7 @@ $(document).ready(() => {
     }
     $(".helper").off();
     $(".helper").removeClass("helper");
-
+    playerPromotions();
     playerMoves();
     mandatoryThreePieceMoves();
     if (clicks.length == 1) {
