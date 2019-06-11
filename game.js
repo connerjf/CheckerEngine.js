@@ -1,4 +1,4 @@
-let checkerBoard = [
+checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 0, 1, 0, 1, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
@@ -7,7 +7,7 @@ let checkerBoard = [
   [2, 0, 2, 0, 2, 0, 2, 0],
   [0, 2, 0, 2, 0, 2, 0, 2],
   [2, 0, 2, 0, 2, 0, 2, 0],
-];
+]
 let possibleMoves = [];
 let favourableMoves = [];
 let legalPlayerMoves = [];
@@ -165,9 +165,10 @@ function blackPromotions() {
                   }
                 }
               }
-            } catch (err) { }
-          }
-        } else if (checkerBoard[i][j] == 3) {
+            }
+          } catch (err) { }
+        }
+      } else if (checkerBoard[i][j] == 3) {
         for (let right = -1; right <= 1; right += 2) {
           for (let down = -1; down <= 1; down += 2) {
             try {
@@ -206,20 +207,20 @@ function blackPromotions() {
     }
   }
 }
-  //Checks if any of the possibleMoves moves a piece to the center pieces,
-  //if so it adds that piece to the favourableMoves array
-  function moreFavourableMoves(p) {
-    if (tripleMoves.length == 0 && possibleMoves.length > 0) {
-      for (let i = 0; i < p.length; i++) {
-        if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
-          if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
-            favourableMoves.push(possibleMoves[i]);
-            possibleMoves.splice(i, 1);
-          }
+//Checks if any of the possibleMoves moves a piece to the center pieces,
+//if so it adds that piece to the favourableMoves array
+function moreFavourableMoves(p) {
+  if (tripleMoves.length == 0 && possibleMoves.length > 0) {
+    for (let i = 0; i < p.length; i++) {
+      if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+        if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
+          favourableMoves.push(possibleMoves[i]);
+          possibleMoves.splice(i, 1);
         }
       }
     }
   }
+}
 
 //Computer determines which move to make
 function chooseBlackMove(p, f, b, t) {
@@ -299,10 +300,10 @@ function movePiece(player) {
     caps = [];
     if (blackMove.length != 4) {
       for (let c = 4; c < blackMove.length; c += 2) {
-        console.log("caps is working");
-        caps.push(blackMove.slice(c, c + 1));
-        console.log(caps);
+        caps.push(blackMove.slice(c, c + 2));
       }
+      console.log(blackMove)
+      console.log(caps);
     }
 
     updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
@@ -330,27 +331,27 @@ function selectRedPiece(c) {
 
 function updateBoard(player, start, finish, capture = []) {
   guiUpdate();
-  // if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
-  // Checks if player is actually at the start
-  console.log(start)
-  if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
-    checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
-    $('#' + start).removeClass(playerID[player - 1]);
-    $('#' + finish).addClass(playerID[player - 1]);
-    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
-    // captures
-    playerID.slice(player - 1);
-    capture.forEach(i => {
-      //console.log(i)
-      checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
-      $('#' + i).removeClass(playerID[0]);
-    });
+  if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
+    // Checks if player is actually at the start
+    console.log(start)
+    if (player === checkerBoard[start.charAt(0)][start.charAt(1)]) {
+      checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
+      $('#' + start).removeClass(playerID[player - 1]);
+      $('#' + finish).addClass(playerID[player - 1]);
+      checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
+      // captures
+      playerID.slice(player - 1);
+      capture.forEach(i => {
+        //console.log(i)
+        checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
+        $('#' + i).removeClass(playerID[player]);
+      });
+    } else {
+      return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
+    }
   } else {
-    return Error("NOT VALID MOVE " + checkerBoard[start.charAt(0)][start.charAt(1)] + checkerBoard[finish.charAt(0)][finish.charAt(1)]);
+    return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
   }
-  // } else {
-  //   return Error("Incorrect player value. Use int for player and string for the rest. Uses the player number on checkerBoard");
-  // }
 }
 
 // updates board from the console
