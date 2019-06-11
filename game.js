@@ -1,11 +1,11 @@
 let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0],
+  [1, 0, 1, 0, 0, 0, 4, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 4, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 3, 0, 0],
   [2, 0, 2, 0, 2, 0, 2, 0],
-  [0, 2, 0, 2, 0, 2, 0, 2],
+  [0, 2, 0, 2, 0, 2, 0, 0],
   [2, 0, 2, 0, 2, 0, 2, 0],
 ];
 let possibleMoves = [];
@@ -18,11 +18,10 @@ let stalemate;
 let winner;
 let captures = [0, 0];
 let redMove;
-let blackMove;
+let blackMove = '';
 let clicks = [];
 let playerID = ['black', 'red'];
 let blackStalemate;
-let blackKingMoves = [];
 
 //Finds the legal moves for the player
 function playerMoves() {
@@ -60,6 +59,41 @@ function playerMoves() {
             }
           } catch (err) { }
         }
+      } else if (checkerBoard[i][j] == 4) {
+        for (let right = -1; right <= 1; right += 2) {
+          for (let down = -1; down <= 1; down += 2) {
+            try {
+              //If the spaces diagonally forwards are clear then add to moves list
+              if (checkerBoard[i + down][j + right] == 0) {
+                legalPlayerMoves.push(String(i) + String(j) + String(i + down) + String(j + right));
+                //If the spaces diagonally forwards are enemy pieces and the pieces
+                //two spaces diagonally are clear, then hop and capture piece
+              }
+              else if (checkerBoard[i + down][j + right] == 1 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0 || checkerBoard[i + down][j + right] == 3 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
+                legalPlayerMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
+                let doubleMidPosRight = j + (right * 2);
+                let doubleMidPosDown = i + (down * 2);
+                for (let right2 = -1; right2 <= 1; right2 += 2) {
+                  for (let down2 = -1; down2 <= 1; down2 += 2) {
+                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
+                      legalPlayerMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
+                      let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
+                      let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
+                      for (let right3 = -1; right3 <= 1; right3 += 2) {
+                        for (let down3 = -1; down3 <= 1; down3 += 2) {
+                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 1 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
+                            legalPlayerMoves.push(String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
+                            break;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (err) { }
+          }
+        }
       }
     }
   }
@@ -78,45 +112,47 @@ function mandatoryThreePieceMoves() {
     }
   }
 }
-//Finds every possible computer move and assigns them to 1 of 3 arrays
-//depending on how beneficial they are
-function blackMoves() {
-  possibleMoves = [];
-  //Check every piece on the board
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      //if it's a black piece than find the possible moves
-      if (checkerBoard[i][j] == 1) {
-        for (let right = -1; right <= 1; right += 2) {
-          try {
-            //If the spaces diagonally forwards are clear then add to moveslist
-            if (checkerBoard[i + 1][j + right] === 0) {
-              possibleMoves.push(String(i) + String(j) + String(i + 1) + String(j + right));
-              //If the spaces diagonally forwards are enemy pieces and the pieces
-              //two spaces diagonally are clear, then hop and capture piece
-            }
-            else if (checkerBoard[i + 1][j + right] == 2 && checkerBoard[i + 2][j + (right * 2)] == 0) {
-              favourableMoves.push(String(i) + String(j) + String(i + 2) + String(j + (right * 2)) + String(i + 1) + String(j + right));
-              let doubleMidPosRight = j + (right * 2);
-              let doubleMidPosDown = i + 2;
-              for (let right2 = -1; right2 <= 1; right2 += 2) {
-                if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
-                  bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
-                  let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
-                  let tripleMidPosDown = i + 4;
-                  for (let right3 = -1; right3 <= 1; right3 += 2) {
-                    if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
-                      tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
-                      break;
+  //Finds every possible computer move and assigns them to 1 of 4 arrays
+  //depending on how beneficial they are
+  function blackMoves() {
+    tripleMoves = '';
+    bestMoves = [];
+    favourableMoves = [];
+    possibleMoves = [];
+    //Check every piece on the board
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        //if it's a black piece than find the possible moves
+        if (checkerBoard[i][j] == 1) {
+          for (let right = -1; right <= 1; right += 2) {
+            try {
+              //If the spaces diagonally forwards are clear then add to moveslist
+              if (checkerBoard[i + 1][j + right] === 0) {
+                possibleMoves.push(String(i) + String(j) + String(i + 1) + String(j + right));
+                //If the spaces diagonally forwards are enemy pieces and the pieces
+                //two spaces diagonally are clear, then hop and capture piece
+              }
+              else if (checkerBoard[i + 1][j + right] == 2 && checkerBoard[i + 2][j + (right * 2)] == 0) {
+                favourableMoves.push(String(i) + String(j) + String(i + 2) + String(j + (right * 2)) + String(i + 1) + String(j + right));
+                let doubleMidPosRight = j + (right * 2);
+                let doubleMidPosDown = i + 2;
+                for (let right2 = -1; right2 <= 1; right2 += 2) {
+                  if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
+                    bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
+                    let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
+                    let tripleMidPosDown = i + 4;
+                    for (let right3 = -1; right3 <= 1; right3 += 2) {
+                      if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
+                        tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
+                        break;
+                      }
                     }
                   }
                 }
               }
-            }
+            } catch (err) { }
           }
-          catch (err) { }
-        }
-      } else if (checkerBoard[i][j] == 3) {
+        } else if (checkerBoard[i][j] == 3) {
         for (let right = -1; right <= 1; right += 2) {
           for (let down = -1; down <= 1; down += 2) {
             try {
@@ -155,29 +191,20 @@ function blackMoves() {
     }
   }
 }
-//Checks if any of the possibleMoves moves a piece to the center pieces,
-//if so it adds that piece to the favourableMoves array
-function moreFavourableMoves(p) {
-  if (tripleMoves.length == 0 && possibleMoves.length > 0) {
-    for (let i = 0; i < p.length; i++) {
-      if (p[i].charAt(2) == 2 || p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p[i].charAt(2) == 5) {
-        if (p[i].charAt(3) == 2 || p[i].charAt(3) == 4) {
-          favourableMoves.push(possibleMoves[i]);
-          possibleMoves.splice(i);
+  //Checks if any of the possibleMoves moves a piece to the center pieces,
+  //if so it adds that piece to the favourableMoves array
+  function moreFavourableMoves(p) {
+    if (tripleMoves.length == 0 && possibleMoves.length > 0) {
+      for (let i = 0; i < p.length; i++) {
+        if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+          if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
+            favourableMoves.push(possibleMoves[i]);
+            possibleMoves.splice(i, 1);
+          }
         }
       }
     }
-    favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
-  } else if (possibleMoves.length == 0) {
-    console.log("no possible moves");
   }
-  favourableMoves.push(possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
-}
-
-
-function orderingKingMoves(b) {
-  console.log(b);
-}
 
 //Computer determines which move to make
 function chooseBlackMove(p, f, b, t) {
@@ -192,15 +219,24 @@ function chooseBlackMove(p, f, b, t) {
   } else {
     blackStalemate = true;
   }
-  tripleMoves = [];
-  bestMoves = [];
-  favourableMoves = [];
-  possibleMoves = [];
-
 }
 
 function win() {
   alert("You won!!!!");
+  if (confirm("Play again?")) {
+    checkerBoard = [
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+    ];
+    guiUpdate();
+  } else {
+  }
 }
 
 
@@ -233,9 +269,9 @@ function movePiece(player) {
         }
         blackMoves();
         console.log(possibleMoves);
-        orderingKingMoves(blackKingMoves);
         moreFavourableMoves(possibleMoves);
         chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
+        console.log(possibleMoves);
         movePiece(1);
       }
     }
