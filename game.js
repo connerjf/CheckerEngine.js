@@ -288,8 +288,10 @@ function movePiece(player) {
         }
         if (captures[1] == 12) {
           win();
+          return
         } else if (captures[0] == 12) {
           lose();
+          return
         }
         blackMoves();
         moreFavourableMoves(possibleMoves);
@@ -327,7 +329,7 @@ function updateBoard(player, start, finish, capture = []) {
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // Checks if player is actually at the start
     // All hail the mighty king
-    if (checkerBoard[start.charAt(0)][start.charAt(1)] > 3) {
+    if (checkerBoard[start.charAt(0)][start.charAt(1)] >= 3) {
       player += 2;
     }
     checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
@@ -346,6 +348,7 @@ function updateBoard(player, start, finish, capture = []) {
   }
   playerPromotions();
   blackPromotions();
+  guiUpdate()
 }
 
 // updates board from the console
