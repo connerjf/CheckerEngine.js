@@ -1,4 +1,4 @@
-checkerBoard = [
+let checkerBoard = [
   [0, 1, 0, 1, 0, 1, 0, 1],
   [1, 0, 1, 0, 1, 0, 1, 0],
   [0, 1, 0, 1, 0, 1, 0, 1],
@@ -13,14 +13,11 @@ let favourableMoves = [];
 let legalPlayerMoves = [];
 let bestMoves = [];
 let tripleMoves = '';
-let stalemate;
-let winner;
 let captures = [0, 0];
 let redMove;
 let blackMove = '';
 let clicks = [];
 let playerID = ['black', 'red', 'bKing', 'rKing'];
-let blackStalemate;
 
 function playerPromotions() {
   for (let i = 0; i < 8; i++) {
@@ -104,6 +101,7 @@ function playerMoves() {
     }
   }
 }
+
 function mandatoryThreePieceMoves() {
   for (let i = 0; i < legalPlayerMoves.length; i++) {
     if (legalPlayerMoves[i].length == 10) {
@@ -163,6 +161,7 @@ function blackMoves() {
                   }
                 }
               }
+            }
           } catch (err) { }
         }
       } else if (checkerBoard[i][j] == 3) {
@@ -204,7 +203,7 @@ function blackMoves() {
     }
   }
 }
-//Checks if any of the possibleMoves moves a piece to the center pieces,
+//Checks if any of the possibleMoves moves a piece to the center pieces or end,
 //if so it adds that piece to the favourableMoves array
 function moreFavourableMoves(p) {
   if (tripleMoves.length == 0 && possibleMoves.length > 0) {
@@ -230,7 +229,7 @@ function chooseBlackMove(p, f, b, t) {
   } else if (p.length > 0) {
     blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
   } else {
-    blackStalemate = true;
+    win();
   }
 }
 
@@ -248,18 +247,31 @@ function win() {
       [2, 0, 2, 0, 2, 0, 2, 0],
     ];
     guiUpdate();
-  } else {
   }
 }
 
+function lose() {
+  alert("You lost!!!!");
+  if (confirm("Play again?")) {
+    checkerBoard = [
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 0, 1, 0, 1, 0],
+      [0, 1, 0, 1, 0, 1, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+      [0, 2, 0, 2, 0, 2, 0, 2],
+      [2, 0, 2, 0, 2, 0, 2, 0],
+    ];
+    guiUpdate();
+  }
+}
 
 //Changes the move string of the players move to an actual change in the main checkerBoard array
 function movePiece(player) {
   if (player == 2) {
-    //console.log(redMove);
     for (let i = 0; i < legalPlayerMoves.length; i++) {
       if (legalPlayerMoves[i] == redMove) {
-        //console.log("match")
         captures[1] += (legalPlayerMoves[i].length - 4) / 2;
         if (legalPlayerMoves[i].length == 4) {
           //  console.log(legalPlayerMoves[i].slice(0, 2))
@@ -267,7 +279,6 @@ function movePiece(player) {
           // sweet sweet linear algebra
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4));
         } else {
-          //  console.log("capture detect")
           caps = [];
           for (let c = 4; c < legalPlayerMoves[i].length; c += 2) {
             caps.push(legalPlayerMoves[i].slice(c, c + 2));
@@ -275,9 +286,10 @@ function movePiece(player) {
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps);
           redMove = '';
         }
-
         if (captures[1] == 12) {
           win();
+        } else if (captures[0] == 12) {
+          lose();
         }
         blackMoves();
         moreFavourableMoves(possibleMoves);
@@ -286,7 +298,6 @@ function movePiece(player) {
       }
     }
   } else if (player == 1) {
-    console.log(blackMove)
     $("#player").html("Computer Thinking... " + (possibleMoves.length * 50))
     $('td').attr('disabled', 'disabled');
     captures[0] += (blackMove.length - 4) / 2;
@@ -295,26 +306,19 @@ function movePiece(player) {
       for (let c = 4; c < blackMove.length; c += 2) {
         caps.push(blackMove.slice(c, c + 2));
       }
-      console.log(blackMove)
-      console.log(caps);
     }
-
     updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
     $("#player").html("RED MOVE")
-
     $('td').removeAttr('disabled');
   }
 }
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
-  //console.log(c)
   if ($("#" + c.slice(0, 2)).hasClass("red")) {
     //  do player move
     redMove = c;
     movePiece(2);
-  } else {
-    //  console.log(c);
   }
 }
 
@@ -322,7 +326,6 @@ function updateBoard(player, start, finish, capture = []) {
   guiUpdate();
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // Checks if player is actually at the start
-    console.log(start)
     checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
     $('#' + start).removeClass(playerID[player - 1]);
     $('#' + finish).addClass(playerID[player - 1]);
@@ -330,7 +333,6 @@ function updateBoard(player, start, finish, capture = []) {
     // captures
     playerID.slice(player - 1);
     capture.forEach(i => {
-      //console.log(i)
       checkerBoard[i.charAt(0)][i.charAt(1)] = 0;
       $('#' + i).removeClass(playerID[player]);
     });
@@ -386,12 +388,10 @@ $(document).ready(() => {
     }
   });
   $("tbody tr").on("click", ".helper", function () {
-    //console.log("click");
     legalPlayerMoves.forEach(i => {
       if (i.slice(0, 4) == clicks.join('')) {
         selectRedPiece(i);
         clicks = [];
-        //  console.log("done")
       }
     });
   });
