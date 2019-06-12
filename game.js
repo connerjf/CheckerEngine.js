@@ -78,13 +78,13 @@ function playerMoves() {
                 let doubleMidPosDown = i + (down * 2);
                 for (let right2 = -1; right2 <= 1; right2 += 2) {
                   for (let down2 = -1; down2 <= 1; down2 += 2) {
-                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
+                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 1 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0 || checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 3 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
                       legalPlayerMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
                       let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                       let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
                       for (let right3 = -1; right3 <= 1; right3 += 2) {
                         for (let down3 = -1; down3 <= 1; down3 += 2) {
-                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 1 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
+                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 1 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0 || checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 3 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
                             legalPlayerMoves.push(String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
                             break;
                           }
@@ -144,17 +144,17 @@ function blackMoves() {
               //If the spaces diagonally forwards are enemy pieces and the pieces
               //two spaces diagonally are clear, then hop and capture piece
             }
-            else if (checkerBoard[i + 1][j + right] == 2 && checkerBoard[i + 2][j + (right * 2)] == 0) {
+            else if (checkerBoard[i + 1][j + right] == 2 && checkerBoard[i + 2][j + (right * 2)] == 0 || checkerBoard[i + 1][j + right] == 4 && checkerBoard[i + 2][j + (right * 2)] == 0) {
               favourableMoves.push(String(i) + String(j) + String(i + 2) + String(j + (right * 2)) + String(i + 1) + String(j + right));
               let doubleMidPosRight = j + (right * 2);
               let doubleMidPosDown = i + 2;
               for (let right2 = -1; right2 <= 1; right2 += 2) {
-                if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
+                if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0 || checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 4 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
                   bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
                   let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                   let tripleMidPosDown = i + 4;
                   for (let right3 = -1; right3 <= 1; right3 += 2) {
-                    if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
+                    if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0 || checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 4 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
                       tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
                       break;
                     }
@@ -174,19 +174,19 @@ function blackMoves() {
                 //If the spaces diagonally forwards are enemy pieces and the pieces
                 //two spaces diagonally are clear, then hop and capture piece
               }
-              else if (checkerBoard[i + down][j + right] == 2 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
+              else if (checkerBoard[i + down][j + right] == 2 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0 || checkerBoard[i + down][j + right] == 4 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
                 favourableMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
                 let doubleMidPosRight = j + (right * 2);
                 let doubleMidPosDown = i + (down * 2);
                 for (let right2 = -1; right2 <= 1; right2 += 2) {
                   for (let down2 = -1; down2 <= 1; down2 += 2) {
-                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
+                    if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0 || checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 4 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
                       bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
                       let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                       let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
                       for (let right3 = -1; right3 <= 1; right3 += 2) {
                         for (let down3 = -1; down3 <= 1; down3 += 2) {
-                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
+                          if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0 || checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 4 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
                             tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
                             break;
                           }
@@ -317,7 +317,6 @@ function movePiece(player) {
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
-  //console.log(c)
   if ($("#" + c.slice(0, 2)).hasClass("red") || $("#" + c.slice(0, 2)).hasClass("rKing")) {
     //  do player move
     redMove = c;
@@ -329,7 +328,6 @@ function updateBoard(player, start, finish, capture = []) {
   guiUpdate();
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // Checks if player is actually at the start
-    console.log(start)
     // All hail the mighty king
     if (checkerBoard[start.charAt(0)][start.charAt(1)] >= 3) {
       player += 2;
