@@ -315,7 +315,8 @@ function movePiece(player) {
 //Finds which piece the player clicked on based off of the coordinates of the pieces compared to the click
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
-  if ($("#" + c.slice(0, 2)).hasClass("red")) {
+  //console.log(c)
+  if ($("#" + c.slice(0, 2)).hasClass("red") || $("#" + c.slice(0, 2)).hasClass("rKing")) {
     //  do player move
     redMove = c;
     movePiece(2);
@@ -326,10 +327,15 @@ function updateBoard(player, start, finish, capture = []) {
   guiUpdate();
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // Checks if player is actually at the start
+    console.log(start)
+    // All hail the mighty king
+    if (checkerBoard[start.charAt(0)][start.charAt(1)] > 3) {
+      player += 2;
+    }
     checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
+    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
     $('#' + start).removeClass(playerID[player - 1]);
     $('#' + finish).addClass(playerID[player - 1]);
-    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
     // captures
     playerID.slice(player - 1);
     capture.forEach(i => {
