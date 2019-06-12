@@ -235,6 +235,15 @@ function chooseBlackMove(p, f, b, t) {
 
 function win() {
   alert("You won!!!!");
+  possibleMoves = [];
+  favourableMoves = [];
+  legalPlayerMoves = [];
+  bestMoves = [];
+  tripleMoves = '';
+  captures = [0, 0];
+  redMove = '';
+  blackMove = '';
+  clicks = [];
   if (confirm("Play again?")) {
     checkerBoard = [
       [0, 1, 0, 1, 0, 1, 0, 1],
@@ -252,6 +261,15 @@ function win() {
 
 function lose() {
   alert("You lost!!!!");
+  possibleMoves = [];
+  favourableMoves = [];
+  legalPlayerMoves = [];
+  bestMoves = [];
+  tripleMoves = '';
+  captures = [0, 0];
+  redMove = '';
+  blackMove = '';
+  clicks = [];
   if (confirm("Play again?")) {
     checkerBoard = [
       [0, 1, 0, 1, 0, 1, 0, 1],
