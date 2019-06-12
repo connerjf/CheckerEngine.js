@@ -163,6 +163,7 @@ function blackMoves() {
                   }
                 }
               }
+            }
           } catch (err) { }
         }
       } else if (checkerBoard[i][j] == 3) {
@@ -309,7 +310,7 @@ function movePiece(player) {
 //Once you click twice, the moveRedPiece function is called
 function selectRedPiece(c) {
   //console.log(c)
-  if ($("#" + c.slice(0, 2)).hasClass("red")) {
+  if ($("#" + c.slice(0, 2)).hasClass("red") || $("#" + c.slice(0, 2)).hasClass("rKing")) {
     //  do player move
     redMove = c;
     movePiece(2);
@@ -323,10 +324,14 @@ function updateBoard(player, start, finish, capture = []) {
   if (typeof player == "number" || typeof start == "string" || typeof finish == "string" || typeof capture == "object" || player - 1 < 0 || player - 1 >= 2) {
     // Checks if player is actually at the start
     console.log(start)
+    // All hail the mighty king
+    if (checkerBoard[start.charAt(0)][start.charAt(1)] > 3) {
+      player += 2;
+    }
     checkerBoard[start.charAt(0)][start.charAt(1)] = 0;
+    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
     $('#' + start).removeClass(playerID[player - 1]);
     $('#' + finish).addClass(playerID[player - 1]);
-    checkerBoard[finish.charAt(0)][finish.charAt(1)] = player;
     // captures
     playerID.slice(player - 1);
     capture.forEach(i => {

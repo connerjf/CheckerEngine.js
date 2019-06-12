@@ -123,10 +123,9 @@ button a {
 
 body {
     margin:0;
-    background: #09002C;
+    background: url(../images/cup.svg), #09002C;
     color: #FFF;
     background-attachment: local, scroll;
-    background-size: 75%;
     background-repeat: no-repeat;
     background-size: 950px;
     background-position: top right;
