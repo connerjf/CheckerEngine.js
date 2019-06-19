@@ -235,32 +235,16 @@ function chooseBlackMove(p, f, b, t) {
 
 function win() {
   alert("You won!!!!");
-  possibleMoves = [];
-  favourableMoves = [];
-  legalPlayerMoves = [];
-  bestMoves = [];
-  tripleMoves = '';
-  captures = [0, 0];
-  redMove = '';
-  blackMove = '';
-  clicks = [];
-  if (confirm("Play again?")) {
-    checkerBoard = [
-      [0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 0, 1, 0, 1, 0, 1, 0],
-      [0, 1, 0, 1, 0, 1, 0, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [2, 0, 2, 0, 2, 0, 2, 0],
-      [0, 2, 0, 2, 0, 2, 0, 2],
-      [2, 0, 2, 0, 2, 0, 2, 0],
-    ];
-    guiUpdate();
-  }
+  reset();
+
 }
 
 function lose() {
   alert("You lost!!!!");
+  reset();
+}
+
+function reset() {
   possibleMoves = [];
   favourableMoves = [];
   legalPlayerMoves = [];
@@ -281,8 +265,8 @@ function lose() {
       [0, 2, 0, 2, 0, 2, 0, 2],
       [2, 0, 2, 0, 2, 0, 2, 0],
     ];
-    guiUpdate();
   }
+  guiUpdate();
 }
 
 //Changes the move string of the players move to an actual change in the main checkerBoard array
@@ -303,13 +287,6 @@ function movePiece(player) {
           }
           updateBoard(2, legalPlayerMoves[i].slice(0, 2), legalPlayerMoves[i].slice(2, 4), caps);
           redMove = '';
-        }
-        if (captures[1] == 12) {
-          win();
-          return
-        } else if (captures[0] == 12) {
-          lose();
-          return
         }
         blackMoves();
         moreFavourableMoves(possibleMoves);
@@ -371,6 +348,14 @@ function updateBoard(player, start, finish, capture = []) {
 
 // updates board from the console
 function guiUpdate() {
+  if (captures[1] == 12) {
+    win();
+    return
+  } else if (captures[0] == 12) {
+    lose();
+    return
+  }
+  $("td").removeClass();
   for (let i = 0; i < 77; i++) {
     if (i <= 9) {
       i = '0' + String(i);
