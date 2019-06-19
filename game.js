@@ -9,13 +9,10 @@ let checkerBoard = [
   [2, 0, 2, 0, 2, 0, 2, 0],
 ]
 let possibleMoves = [];
-let favourableMoves = [];
 let legalPlayerMoves = [];
-let bestMoves = [];
-let tripleMoves = '';
 let captures = [0, 0];
 let redMove;
-let blackMove = '';
+let blackMove;
 let clicks = [];
 let playerID = ['black', 'red', 'bKing', 'rKing'];
 
@@ -127,9 +124,6 @@ function blackPromotions() {
 //Finds every possible computer move and assigns them to 1 of 4 arrays
 //depending on how beneficial they are
 function blackMoves() {
-  tripleMoves = '';
-  bestMoves = [];
-  favourableMoves = [];
   possibleMoves = [];
   //Check every piece on the board
   for (let i = 0; i < 8; i++) {
@@ -145,17 +139,17 @@ function blackMoves() {
               //two spaces diagonally are clear, then hop and capture piece
             }
             else if (checkerBoard[i + 1][j + right] == 2 && checkerBoard[i + 2][j + (right * 2)] == 0 || checkerBoard[i + 1][j + right] == 4 && checkerBoard[i + 2][j + (right * 2)] == 0) {
-              favourableMoves.push(String(i) + String(j) + String(i + 2) + String(j + (right * 2)) + String(i + 1) + String(j + right));
+              possibleMoves.push(String(i) + String(j) + String(i + 2) + String(j + (right * 2)) + String(i + 1) + String(j + right));
               let doubleMidPosRight = j + (right * 2);
               let doubleMidPosDown = i + 2;
               for (let right2 = -1; right2 <= 1; right2 += 2) {
                 if (checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0 || checkerBoard[doubleMidPosDown + 1][doubleMidPosRight + right2] == 4 && checkerBoard[doubleMidPosDown + 2][doubleMidPosRight + (right2 * 2)] == 0) {
-                  bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
+                  possibleMoves.push(String(i) + String(j) + String(doubleMidPosDown + 2) + String(doubleMidPosRight + (right2 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2));
                   let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                   let tripleMidPosDown = i + 4;
                   for (let right3 = -1; right3 <= 1; right3 += 2) {
                     if (checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0 || checkerBoard[tripleMidPosDown + 1][tripleMidPosRight + right3] == 4 && checkerBoard[tripleMidPosDown + 2][tripleMidPosRight + (right3 * 2)] == 0) {
-                      tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
+                      possibleMoves.push(String(i) + String(j) + String(tripleMidPosDown + 2) + String(tripleMidPosRight + (right3 * 2)) + String(i + 1) + String(j + right) + String(doubleMidPosDown + 1) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + 1) + String(tripleMidPosRight + right3));
                       break;
                     }
                   }
@@ -169,25 +163,25 @@ function blackMoves() {
           for (let down = -1; down <= 1; down += 2) {
             try {
               //If the spaces diagonally forwards are clear then add to moveslist
-              if (checkerBoard[i + down][j + right] === 0) {
+              if (checkerBoard[i + down][j + right] == 0) {
                 possibleMoves.push(String(i) + String(j) + String(i + down) + String(j + right));
                 //If the spaces diagonally forwards are enemy pieces and the pieces
                 //two spaces diagonally are clear, then hop and capture piece
               }
               else if (checkerBoard[i + down][j + right] == 2 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0 || checkerBoard[i + down][j + right] == 4 && checkerBoard[i + (down * 2)][j + (right * 2)] == 0) {
-                favourableMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
+                possibleMoves.push(String(i) + String(j) + String(i + (down * 2)) + String(j + (right * 2)) + String(i + down) + String(j + right));
                 let doubleMidPosRight = j + (right * 2);
                 let doubleMidPosDown = i + (down * 2);
                 for (let right2 = -1; right2 <= 1; right2 += 2) {
                   for (let down2 = -1; down2 <= 1; down2 += 2) {
                     if (checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 2 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0 || checkerBoard[doubleMidPosDown + down2][doubleMidPosRight + right2] == 4 && checkerBoard[doubleMidPosDown + (down2 * 2)][doubleMidPosRight + (right2 * 2)] == 0) {
-                      bestMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
+                      possibleMoves.push(String(i) + String(j) + String(doubleMidPosDown + (down2 * 2)) + String(doubleMidPosRight + (right2 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2));
                       let tripleMidPosRight = doubleMidPosRight + (right2 * 2);
                       let tripleMidPosDown = doubleMidPosDown + (down2 * 2);
                       for (let right3 = -1; right3 <= 1; right3 += 2) {
                         for (let down3 = -1; down3 <= 1; down3 += 2) {
                           if (checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 2 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0 || checkerBoard[tripleMidPosDown + down3][tripleMidPosRight + right3] == 4 && checkerBoard[tripleMidPosDown + (down3 * 2)][tripleMidPosRight + (right3 * 2)] == 0) {
-                            tripleMoves = (String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
+                            possibleMoves.push(String(i) + String(j) + String(tripleMidPosDown + (down3 * 2)) + String(tripleMidPosRight + (right3 * 2)) + String(i + down) + String(j + right) + String(doubleMidPosDown + down2) + String(doubleMidPosRight + right2) + String(tripleMidPosDown + down3) + String(tripleMidPosRight + right3));
                             break;
                           }
                         }
@@ -205,31 +199,60 @@ function blackMoves() {
 }
 //Checks if any of the possibleMoves moves a piece to the center pieces or end,
 //if so it adds that piece to the favourableMoves array
-function moreFavourableMoves(p) {
-  if (tripleMoves.length == 0 && possibleMoves.length > 0) {
-    for (let i = 0; i < p.length; i++) {
-      if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4 || p) {
-        if (p[i].charAt(3) == 3 || p[i].charAt(3) == 4) {
-          favourableMoves.push(possibleMoves[i]);
-          possibleMoves.splice(i, 1);
-        }
+function blackMoveScoring(p) {
+  for (let i = 0; i < p.length; i++) {
+    let newMoveValue = {
+      move: p[i],
+      score: 0
+    };
+
+    if (p[i].length == 10) {
+      newMoveValue.score += 35;
+    } else if (p[i].length == 8) {
+      newMoveValue.score += 22;
+    } else if (p[i].length == 6) {
+      newMoveValue.score += 9;
+    } else if (p[i].length == 4) {
+      newMoveValue.score += 5;
+    }
+
+    if (captures[0] > captures[1] && p[i].length > 4) {
+      newMoveValue.score += 4;
+    }
+
+    if (checkerBoard[p[i].charAt(2)][p[i].charAt(3)] == 4) {
+      newMoveValue.score += 9;
+    }
+
+    if (p[i].charAt(2) == 3 || p[i].charAt(2) == 4) {
+      if (p[i].charAt(3) == 2 || p[i].charAt(3) == 3 || p[i].charAt(3) == 4 || p[i].charAt(3) == 5) {
+        newMoveValue.score += 3;
       }
     }
+
+    if (p[i].charAt(2) == 7 && checkerBoard[p[i].charAt(0)][p[i].charAt(1)] == 1) {
+      newMoveValue.score += 4;
+    }
+
+    if (p[i].charAt(0) == 0) {
+      newMoveValue.score -= 2;
+    }
+
+    p[i] = newMoveValue;
   }
+  let randomizer = Math.floor(Math.random() * p.length);
+  p[randomizer].score += 2.5;
+
 }
 
 //Computer determines which move to make
-function chooseBlackMove(p, f, b, t) {
-  if (t.length > 0) {
-    blackMove = tripleMoves;
-  } else if (b.length > 0) {
-    blackMove = bestMoves[Math.floor(Math.random() * b.length)];
-  } else if (f.length > 0) {
-    blackMove = favourableMoves[Math.floor(Math.random() * f.length)];
-  } else if (p.length > 0) {
-    blackMove = possibleMoves[Math.floor(Math.random() * p.length)];
-  } else {
-    win();
+function chooseBlackMove(p) {
+  let highestScore = 0;
+  for (let i = 0; i < p.length; i++) {
+    if (highestScore < p[i].score) {
+      highestScore = p[i].score;
+      blackMove = p[i];
+    }
   }
 }
 
@@ -306,28 +329,28 @@ function movePiece(player) {
         }
         if (captures[1] == 12) {
           win();
-          return
+          return;
         } else if (captures[0] == 12) {
           lose();
-          return
+          return;
         }
         blackMoves();
-        moreFavourableMoves(possibleMoves);
-        chooseBlackMove(possibleMoves, favourableMoves, bestMoves, tripleMoves);
+        blackMoveScoring(possibleMoves);
+        chooseBlackMove(possibleMoves);
         movePiece(1);
       }
     }
   } else if (player == 1) {
     $("#player").html("Computer Thinking... " + (possibleMoves.length * 50))
     $('td').attr('disabled', 'disabled');
-    captures[0] += (blackMove.length - 4) / 2;
+    captures[0] += (blackMove.move.length - 4) / 2;
     caps = [];
-    if (blackMove.length != 4) {
-      for (let c = 4; c < blackMove.length; c += 2) {
-        caps.push(blackMove.slice(c, c + 2));
+    if (blackMove.move.length != 4) {
+      for (let c = 4; c < blackMove.move.length; c += 2) {
+        caps.push(blackMove.move.slice(c, c + 2));
       }
     }
-    updateBoard(1, blackMove.slice(0, 2), blackMove.slice(2, 4), caps);
+    updateBoard(1, blackMove.move.slice(0, 2), blackMove.move.slice(2, 4), caps);
     $("#player").html("RED MOVE")
     $('td').removeAttr('disabled');
   }
